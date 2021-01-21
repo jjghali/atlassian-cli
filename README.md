@@ -43,7 +43,4 @@ pip freeze > requirements.txt
 
 
 ## Doc
-https://developer.valvesoftware.com/wiki/Steam_Web_API
-https://partner.steamgames.com/documentation/community_data
-https://stackoverflow.com/questions/13784059/how-to-get-the-price-of-an-app-in-steam-webapi
-https://discordpy.readthedocs.io/en/latest/index.html#
+https://pypi.org/project/atlassian-python-api/
