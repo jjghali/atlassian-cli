@@ -44,3 +44,4 @@ pip freeze > requirements.txt
 
 ## Doc
 https://pypi.org/project/atlassian-python-api/
+https://click.palletsprojects.com/en/7.x/

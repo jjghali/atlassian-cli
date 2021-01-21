@@ -1,22 +1,24 @@
+import click
 from sys import argv
 # from gandalf import app
 
-commands = ['help', '-v', 'product']
+@click.group()
+def cli():
+    pass
 
-
-def help():
-    print("this is help")
-
-
+@cli.command()
 def version():
     print("app version here")
 
+@cli.command(name="product")
+def product():    
+    print("product infos")
+    print()
+
+
+@cli.command()
+def hello():
+    """Gandalf app"""
 
 if __name__ == '__main__':
-    if argv[1].lower() in commands:
-        if argv[1].lower() == "help":
-            help()
-        elif argv[1].lower() == "-v":
-            version()
-    else:
-        help()
+    cli()    
