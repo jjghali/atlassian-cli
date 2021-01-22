@@ -11,6 +11,7 @@ jiraInstance = {}
 @click.group()
 @click.pass_context
 def releasenote(ctx):
+    """Create a release note one on Confluence"""
     pass
 
 

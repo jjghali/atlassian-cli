@@ -8,6 +8,7 @@ DEFAULT_CONFIG_FILE_PATH = expanduser("~")+"/.gdlf_config.yml"
 
 @click.command()
 def config():
+    """Configure Gandalf for local use."""
     dict_file = dict()
     credentials = dict()
     dict_file["bitbucket"] = "bitbucket-url"

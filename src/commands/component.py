@@ -14,6 +14,7 @@ jiraInstance = {}
 @click.option('-c', '--component-name', default=False)
 @click.pass_context
 def component(ctx, product_name, component_name):
+    """Get information about a component"""
     context_parent = click.get_current_context()
     ctx.ensure_object(dict)
 
