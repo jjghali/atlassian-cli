@@ -23,6 +23,7 @@ def cli(ctx, bitbucket_url, jira_url, atlassian_username, atlassian_password):
 
 @cli.command()
 def version():
+    """App version"""
     print("app version here")
 
 
