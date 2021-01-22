@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  bitbucket:
+    image: atlassian/bitbucket-server:latest
+    container_name: gdlf_bitbucket
+    volumes:
+      - ./bitbucket_volume/:/var/atlassian/application-data/bitbucket
+    ports:
+      - 7990:7990
+      - 7999:7999
+
+  jira:
+    image: atlassian/jira-software
+    container_name: gdlf_jira
+    volumes:
+      - ./jira_volume/:/var/atlassian/application-data/jira
+    ports:
+      - 8080:8080
+
+  confluence:
+    image: atlassian/confluence-server
+    container_name: gdlf_confluence
+    volumes:
+      - ./confluence_volume/:/var/atlassian/application-data/confluence
+    ports:
+      - 8090:8090

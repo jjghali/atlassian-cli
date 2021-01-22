@@ -5,17 +5,18 @@ import json
 from atlassian import Bitbucket
 from atlassian import Jira
 
-bitbucketInstance={}
-jiraInstance={}
+bitbucketInstance = {}
+jiraInstance = {}
+
 
 @click.group()
 @click.option('-n', '--product-name', default=False)
 @click.option('-c', '--component-name', default=False)
 @click.pass_context
 def component(ctx, product_name, component_name):
-    context_parent = click.get_current_context()    
+    context_parent = click.get_current_context()
     ctx.ensure_object(dict)
-    
+
     ctx.obj['PRODUCT_NAME'] = product_name
     ctx.obj['COMPONENT_NAME'] = component_name
     ctx.obj['BITBUCKET_URL'] = context_parent.obj['BITBUCKET_URL']
@@ -25,22 +26,24 @@ def component(ctx, product_name, component_name):
 
 @component.group(chain=True, invoke_without_command=False)
 @click.pass_context
-@click.option('-r', '--release-name', default=False)
+@click.option('-v', '--version', default=False)
 def release(ctx, release_name):
-    bitbucketInstance={}
+    bitbucketInstance = {}
     if ctx.obj['BITBUCKET_URL'] is not None:
         bitbucketInstance = Bitbucket(
-            url = ctx.obj['BITBUCKET_URL'],
-            username = ctx.obj['ATLASSIAN_USERNAME'],
-            password = ctx.obj['ATLASSIAN_PASSWORD']        
+            url=ctx.obj['BITBUCKET_URL'],
+            username=ctx.obj['ATLASSIAN_USERNAME'],
+            password=ctx.obj['ATLASSIAN_PASSWORD']
         )
 
-        result = bitbucketInstance.get_project_tags(ctx.obj['PRODUCT_NAME'], 
-            ctx.obj['COMPONENT_NAME'], release_name)
-        
-        tags = result["values"]        
-        targetTag = next(filter(lambda x:x["displayId"] == release_name, tags), None)
+        result = bitbucketInstance.get_project_tags(ctx.obj['PRODUCT_NAME'],
+                                                    ctx.obj['COMPONENT_NAME'], release_name)
+
+        tags = result["values"]
+        targetTag = next(
+            filter(lambda x: x["displayId"] == release_name, tags), None)
         pprint.pp(targetTag)
+
 
 @release.command()
 @click.pass_context
