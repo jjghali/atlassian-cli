@@ -10,6 +10,7 @@ def product(ctx,product_name):
     ctx.obj['PRODUCT_NAME'] = product_name
     ctx.obj['ATLASSIAN_USERNAME'] = context_parent.obj['ATLASSIAN_USERNAME']
     ctx.obj['ATLASSIAN_PASSWORD'] = context_parent.obj['ATLASSIAN_PASSWORD']
+    # TODO: add  atlassian API lib initialisation here
 
 @product.command()
 def list():
@@ -32,3 +33,11 @@ def components(ctx):
     productName = ctx.obj["PRODUCT_NAME"]
     print("lists products components")
     print(productName)
+
+@product.command()
+@click.pass_context
+def info(ctx):
+    """Displays info about a product"""        
+    productName = ctx.obj["PRODUCT_NAME"]
+    print("product info here")
+    
