@@ -23,7 +23,7 @@ def component(ctx, product_name, component_name):
     ctx.obj['ATLASSIAN_PASSWORD'] = context_parent.obj['ATLASSIAN_PASSWORD']
 
 
-@component.command()
+@component.group(chain=True, invoke_without_command=False)
 @click.pass_context
 @click.option('-r', '--release-name', default=False)
 def release(ctx, release_name):
@@ -42,3 +42,7 @@ def release(ctx, release_name):
         targetTag = next(filter(lambda x:x["displayId"] == release_name, tags), None)
         pprint.pp(targetTag)
 
+@release.command()
+@click.pass_context
+def tasks(ctx):
+    print("show tasks here")
