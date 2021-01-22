@@ -7,7 +7,7 @@
 
 For ubuntu users:
 ```
-$ sudo apt install python3 python3-pip python3-virtualenv python3-venv
+$ sudo apt install python3 python3-pip
 ```
 For other platforms
 ```
@@ -19,6 +19,7 @@ pip install virtualenv
 In order to run the project you will first need to create a Virtual environment in python by running the following command.
 
 ```
+pip install virtualenv
 mkdir venv
 python3 -m virtualenv ./venv
 cd venv/bin
