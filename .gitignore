@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 bitbucket_volume/
+gdlf_config.yml
