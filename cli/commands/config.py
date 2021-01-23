@@ -10,11 +10,17 @@ def config():
     """Configure Gandalf for local use."""
     dict_file = dict()
     credentials = dict()
-    dict_file["bitbucket"] = "bitbucket-url"
-    dict_file["jira"] = "jira-url"
-    dict_file["confluence"] = "confluence-url"
-    credentials["username"] = "username-atlassian"
-    credentials["password"] = "password-atlassian"
+
+    dict_file["bitbucket-url"] = click.prompt(
+        "Please enter the url for Bitbucket", type=str)
+    dict_file["jira-url"] = click.prompt(
+        "Please enter the url for Jira", type=str)
+    dict_file["confluence-url"] = click.prompt(
+        "Please enter the url for Confluence", type=str)
+    credentials["username"] = click.prompt(
+        "Atlassian username", type=str)
+    credentials["password"] = click.prompt(
+        "Atlassian password", type=str)
     dict_file["credentials"] = credentials
     create_config(DEFAULT_CONFIG_FILE_PATH, dict_file)
     load_config(DEFAULT_CONFIG_FILE_PATH)
