@@ -1,4 +1,0 @@
-bitbucket: bitbucket-url
-confluence: confluence-url
-credentials: {password: password-atlassian, username: username-atlassian}
-jira: jira-url
