@@ -36,11 +36,13 @@ def versions(ctx):
 @click.option('--changes/--no-changes', required=False, default=False)
 def tickets(ctx, product_version, changes):
     """Lists all components of a product"""
-    if product_version is not None:
-        result = jiraInstance.get_project_version_issues(product_version)
-        pprint.pp(result)
-    else:
-        pass
+
+    result = jiraInstance.get_project_version_issues(product_version)
+    pprint.pp(result)
+
+    if changes:
+        print("changes are true")
+
     print("lists products components")
 
 
