@@ -12,6 +12,8 @@ def config():
     
     dict_file["product-name"] = click.prompt(
         "Please enter the name of the product", type=str)
+    dict_file["project-key"] = click.prompt(
+        "Please enter the project key on Jira", type=str)
     dict_file["bitbucket-url"] = click.prompt(
         "Please enter the url for Bitbucket", type=str)
     dict_file["jira-url"] = click.prompt(

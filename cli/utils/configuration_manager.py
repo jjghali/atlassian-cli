@@ -14,5 +14,9 @@ class ConfigurationManager:
             return data
 
     def create_config(self, data):
+        credentials = "{username}:{password}".format(username = data["credentials"]["username"],
+            password = data["credentials"]["password"])
+        data["credentials"]["base64"] = base64.b64encode(credentials)
+        
         with open(self.DEFAULT_CONFIG_FILE_PATH, 'w') as file:
             yaml.dump(data, file)

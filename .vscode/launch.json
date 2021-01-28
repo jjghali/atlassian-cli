@@ -12,10 +12,9 @@
             "console": "integratedTerminal",
             "python": "${command:python.interpreterPath}",
             "args": [
-                "component",
-                "-c web-spa",
-                "release",
-                "-v 3.78.0"
+                "product",
+                "tickets",
+                "-v 8.1.0"
             ]
         }
     ]
