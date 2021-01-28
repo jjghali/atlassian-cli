@@ -1,5 +1,6 @@
 import click
 import pprint36 as pprint
+from prettytable import PrettyTable
 from services import JiraService
 
 jiraInstance = JiraService()
@@ -37,13 +38,20 @@ def versions(ctx):
 def tickets(ctx, product_version, changes):
     """Lists all components of a product"""
 
-    result = jiraInstance.get_project_version_issues(product_version)
-    pprint.pp(result)
+    versionInfo = jiraInstance.get_project_version_infos(product_version)
+    output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
+    print(output.format(
+        versionInfo["id"],
+        versionInfo["name"],
+        versionInfo["description"],
+        versionInfo["released"],
+        versionInfo["startDate"],
+        versionInfo["releaseDate"]))
 
     if changes:
-        print("changes are true")
-
-    print("lists products components")
+        print("----------Issues----------")
+        issues = jiraInstance.get_project_version_issues(versionInfo["id"])
+        printIssues(issues)
 
 
 @product.command()
@@ -52,3 +60,14 @@ def info(ctx):
     """Displays info about a product"""
 
     print("product info here")
+
+
+def printIssues(issues):
+    table = PrettyTable()
+    table.field_names = ["Key", "Status"]
+
+    for x in issues:
+        table.add_row([x["key"],
+                       x["fields"]["status"]["name"]])
+    print("----------Issues----------")
+    print(table)
