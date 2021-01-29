@@ -4,6 +4,7 @@ import json
 from atlassian import Jira
 from utils import ConfigurationManager
 import pprint36 as pprint
+from prettytable import PrettyTable
 
 
 class JiraService:
@@ -28,8 +29,12 @@ class JiraService:
         changes = self.get_changes(issue_id)
 
     def get_repositories_from_issue(self, issue_id):
-        endpoint_url = "{jira_url}rest/dev-status/1.0/issue/detail".format(
+        endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
             jira_url=self.config["jira-url"])
+
+        endpoint_url = endpoint_url.replace("//", "/")
+        # the lazy way
+        endpoint_url = endpoint_url.replace("http:/", "http://")
 
         querystring = {
             "issueId": issue_id,
@@ -50,7 +55,6 @@ class JiraService:
         return repositories
 
     def get_project_version_infos(self, version):
-
         data = self.jiraInstance.get_project_versions_paginated(
             self.config["project-key"], limit=50)
         versionData = next(
@@ -74,7 +78,7 @@ class JiraService:
         return versionData
 
     def get_project_version_issues(self, versionId):
-        jql_query = "project = {0} AND fixVersion = {1} AND (type = Story) order by key".format(
+        jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
             self.config["project-key"], versionId)
 
         data = self.jiraInstance.jql(jql_query)["issues"]
@@ -101,3 +105,23 @@ class JiraService:
 
         content = content + rows
         return content
+
+    def printIssues(self, versionId):
+        issues = self.get_project_version_issues(versionId)
+        table = PrettyTable()
+        table.field_names = ["Key", "Repositories", "Status"]
+
+        for x in issues:
+            repositories = self.get_repositories_from_issue(x["id"])
+            concatRepos = ""
+            # for r in repositories:
+            #     concatRepos + r["name"] + " "
+            if len(repositories) > 0:
+                table.add_row([x["key"], repositories[0]["name"],
+                               x["fields"]["status"]["name"]])
+            else:
+                table.add_row([x["key"], "None",
+                               x["fields"]["status"]["name"]])
+
+        output = "----------Issues----------\n{0}".format(table)
+        return output

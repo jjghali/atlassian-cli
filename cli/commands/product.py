@@ -47,6 +47,7 @@ def tickets(ctx, product_version, changes, confluence):
         print(confMarkup)
     else:
         output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
+
         if versionInfo is not None:
             print("test")
             print(output.format(
@@ -58,8 +59,8 @@ def tickets(ctx, product_version, changes, confluence):
                 versionInfo["releaseDate"]))
 
         if changes:
-            issues = jiraInstance.get_project_version_issues(versionInfo["id"])
-            printIssues(issues)
+            output = jiraInstance.printIssues(versionInfo["id"])
+            print(output)
 
 
 @product.command()
@@ -68,21 +69,3 @@ def info(ctx):
     """Displays info about a product"""
 
     print("product info here")
-
-
-def printIssues(issues):
-    table = PrettyTable()
-    table.field_names = ["Key", "Repositories", "Status"]
-    for x in issues:
-        repositories = jiraInstance.get_repositories_from_issue(x["id"])
-        concatRepos = ""
-        # for r in repositories:
-        #     concatRepos + r["name"] + " "
-        if len(repositories) > 0:
-            table.add_row([x["key"], repositories[0]["name"],
-                           x["fields"]["status"]["name"]])
-        else:
-            table.add_row([x["key"], "None",
-                           x["fields"]["status"]["name"]])
-    print("----------Issues----------")
-    print(table)
