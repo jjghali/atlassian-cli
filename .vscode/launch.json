@@ -14,7 +14,8 @@
             "args": [
                 "product",
                 "tickets",
-                "-v 8.1.0"
+                "-v 8.1.0",
+                "--changes"
             ]
         }
     ]

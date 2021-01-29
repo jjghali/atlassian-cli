@@ -40,16 +40,16 @@ def tickets(ctx, product_version, changes):
 
     versionInfo = jiraInstance.get_project_version_infos(product_version)
     output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
-    print(output.format(
-        versionInfo["id"],
-        versionInfo["name"],
-        versionInfo["description"],
-        versionInfo["released"],
-        versionInfo["startDate"],
-        versionInfo["releaseDate"]))
+    if versionInfo is not None:
+        print(output.format(
+            versionInfo["id"],
+            versionInfo["name"],
+            versionInfo["description"],
+            versionInfo["released"],
+            versionInfo["startDate"],
+            versionInfo["releaseDate"]))
 
     if changes:
-        print("----------Issues----------")
         issues = jiraInstance.get_project_version_issues(versionInfo["id"])
         printIssues(issues)
 
@@ -64,10 +64,17 @@ def info(ctx):
 
 def printIssues(issues):
     table = PrettyTable()
-    table.field_names = ["Key", "Status"]
-
+    table.field_names = ["Key", "Repositories", "Status"]
     for x in issues:
-        table.add_row([x["key"],
-                       x["fields"]["status"]["name"]])
+        repositories = jiraInstance.get_repositories_from_issue(x["id"])
+        concatRepos = ""
+        # for r in repositories:
+        #     concatRepos + r["name"] + " "
+        if len(repositories) > 0:
+            table.add_row([x["key"], repositories[0]["name"],
+                           x["fields"]["status"]["name"]])
+        else:
+            table.add_row([x["key"], "None",
+                           x["fields"]["status"]["name"]])
     print("----------Issues----------")
     print(table)

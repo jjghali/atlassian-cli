@@ -3,6 +3,7 @@ import requests
 import json
 from atlassian import Jira
 from utils import ConfigurationManager
+import pprint36 as pprint
 
 
 class JiraService:
@@ -25,7 +26,7 @@ class JiraService:
         issue_id = issue_details["id"]
         changes = self.get_changes(issue_id)
 
-    def get_changes(self, issue_id):
+    def get_repositories_from_issue(self, issue_id):
         endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
             jira_url=self.config["jira-url"])
 
@@ -42,8 +43,9 @@ class JiraService:
         }
 
         response = requests.request(
-            "GET", url, data=payload, headers=headers, params=querystring)
-        repositories = response.json()["detail"]["repositories"]
+            "GET", endpoint_url, data=payload, headers=headers, params=querystring)
+        result = json.loads(response.text)
+        repositories = result["detail"][0]["repositories"]
         return repositories
 
     def get_project_version_infos(self, version):
