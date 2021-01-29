@@ -11,10 +11,11 @@ class JiraService:
 
     def __init__(self):
         self.config = self.confManager.load_config()
-        self.jiraInstance = Jira(
-            url=self.config["jira-url"],
-            username=self.config["credentials"]["username"],
-            password=self.config["credentials"]["password"])
+        if self.config is not None:
+            self.jiraInstance = Jira(
+                url=self.config["jira-url"],
+                username=self.config["credentials"]["username"],
+                password=self.config["credentials"]["password"])
 
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
@@ -27,7 +28,7 @@ class JiraService:
         changes = self.get_changes(issue_id)
 
     def get_repositories_from_issue(self, issue_id):
-        endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
+        endpoint_url = "{jira_url}rest/dev-status/1.0/issue/detail".format(
             jira_url=self.config["jira-url"])
 
         querystring = {
@@ -49,16 +50,31 @@ class JiraService:
         return repositories
 
     def get_project_version_infos(self, version):
+
         data = self.jiraInstance.get_project_versions_paginated(
             self.config["project-key"], limit=50)
         versionData = next(
-            filter(lambda x: x["name"] == "{0}.{1}".format(
-                self.config["project-key"], version), data["values"]), None)
+            filter(lambda x: x["name"] == version, data["values"]), None)
+
+        # Validation
+
+        if "name" not in versionData:
+            versionData["name"] = ""
+        if "id" not in versionData:
+            versionData["id"] = ""
+        if "description" not in versionData:
+            versionData["description"] = ""
+        if "released" not in versionData:
+            versionData["released"] = ""
+        if "startDate" not in versionData:
+            versionData["startDate"] = ""
+        if "releaseDate" not in versionData:
+            versionData["releaseDate"] = ""
 
         return versionData
 
     def get_project_version_issues(self, versionId):
-        jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
+        jql_query = "project = {0} AND fixVersion = {1} AND (type = Story) order by key".format(
             self.config["project-key"], versionId)
 
         data = self.jiraInstance.jql(jql_query)["issues"]
@@ -77,7 +93,7 @@ class JiraService:
                 for r in repositories:
                     concatRepos = concatRepos + r["name"] + ", "
 
-            if concatRepos is "":
+            if concatRepos == "":
                 concatRepos = " "
             row = "||{ticket}|{repos}|{status}|{summary}|{remarques}|".format(
                 ticket=x["key"], repos=concatRepos, status=x["fields"]["status"]["name"], summary=x["fields"]["summary"].replace("|", "-"), remarques=" ")

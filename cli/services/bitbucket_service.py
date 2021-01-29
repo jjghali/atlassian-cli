@@ -15,10 +15,11 @@ class BitbucketService:
 
     def __init__(self):
         self.config = self.confManager.load_config()
-        self.bitbucketInstance = Bitbucket(
-            url=self.config["bitbucket-url"],
-            username=self.config["credentials"]["username"],
-            password=self.config["credentials"]["password"])
+        if self.config is not None:
+            self.bitbucketInstance = Bitbucket(
+                url=self.config["bitbucket-url"],
+                username=self.config["credentials"]["username"],
+                password=self.config["credentials"]["password"])
 
     def getRelease(self, component_name, version):
 

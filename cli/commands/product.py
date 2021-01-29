@@ -39,6 +39,7 @@ def versions(ctx):
 def tickets(ctx, product_version, changes, confluence):
     """Lists all components of a product"""
 
+    product_version = product_version.strip()
     versionInfo = jiraInstance.get_project_version_infos(product_version)
 
     if confluence:
@@ -47,6 +48,7 @@ def tickets(ctx, product_version, changes, confluence):
     else:
         output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
         if versionInfo is not None:
+            print("test")
             print(output.format(
                 versionInfo["id"],
                 versionInfo["name"],
