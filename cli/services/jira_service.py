@@ -58,8 +58,30 @@ class JiraService:
         return versionData
 
     def get_project_version_issues(self, versionId):
-        jql_query = "project = {0} AND fixVersion = {1} order by key".format(
+        jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
             self.config["project-key"], versionId)
 
         data = self.jiraInstance.jql(jql_query)["issues"]
         return data
+
+    def printConfluenceMarkup(self, versionId):
+        issues = self.get_project_version_issues(versionId)
+
+        content = "|| Ticket JIRA || Projects || Status || Summary || Remarques ||\n"
+        rows = ""
+        for x in issues:
+            repositories = self.get_repositories_from_issue(x["id"])
+            concatRepos = ""
+
+            if len(repositories) > 0:
+                for r in repositories:
+                    concatRepos = concatRepos + r["name"] + ", "
+
+            if concatRepos is "":
+                concatRepos = " "
+            row = "||{ticket}|{repos}|{status}|{summary}|{remarques}|".format(
+                ticket=x["key"], repos=concatRepos, status=x["fields"]["status"]["name"], summary=x["fields"]["summary"].replace("|", "-"), remarques=" ")
+            rows = rows + row + "\n"
+
+        content = content + rows
+        return content

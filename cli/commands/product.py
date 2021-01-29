@@ -35,23 +35,29 @@ def versions(ctx):
 @click.pass_context
 @click.option('-v', '--product-version', default=False)
 @click.option('--changes/--no-changes', required=False, default=False)
-def tickets(ctx, product_version, changes):
+@click.option('--confluence/--no-confluence', required=False, default=False)
+def tickets(ctx, product_version, changes, confluence):
     """Lists all components of a product"""
 
     versionInfo = jiraInstance.get_project_version_infos(product_version)
-    output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
-    if versionInfo is not None:
-        print(output.format(
-            versionInfo["id"],
-            versionInfo["name"],
-            versionInfo["description"],
-            versionInfo["released"],
-            versionInfo["startDate"],
-            versionInfo["releaseDate"]))
 
-    if changes:
-        issues = jiraInstance.get_project_version_issues(versionInfo["id"])
-        printIssues(issues)
+    if confluence:
+        confMarkup = jiraInstance.printConfluenceMarkup(versionInfo["id"])
+        print(confMarkup)
+    else:
+        output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
+        if versionInfo is not None:
+            print(output.format(
+                versionInfo["id"],
+                versionInfo["name"],
+                versionInfo["description"],
+                versionInfo["released"],
+                versionInfo["startDate"],
+                versionInfo["releaseDate"]))
+
+        if changes:
+            issues = jiraInstance.get_project_version_issues(versionInfo["id"])
+            printIssues(issues)
 
 
 @product.command()
