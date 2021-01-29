@@ -3,6 +3,8 @@ import requests
 import json
 from atlassian import Jira
 from utils import ConfigurationManager
+import pprint36 as pprint
+from prettytable import PrettyTable
 
 
 class JiraService:
@@ -10,10 +12,11 @@ class JiraService:
 
     def __init__(self):
         self.config = self.confManager.load_config()
-        self.jiraInstance = Jira(
-            url=self.config["jira-url"],
-            username=self.config["credentials"]["username"],
-            password=self.config["credentials"]["password"])
+        if self.config is not None:
+            self.jiraInstance = Jira(
+                url=self.config["jira-url"],
+                username=self.config["credentials"]["username"],
+                password=self.config["credentials"]["password"])
 
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
@@ -25,9 +28,13 @@ class JiraService:
         issue_id = issue_details["id"]
         changes = self.get_changes(issue_id)
 
-    def get_changes(self, issue_id):
+    def get_repositories_from_issue(self, issue_id):
         endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
             jira_url=self.config["jira-url"])
+
+        endpoint_url = endpoint_url.replace("//", "/")
+        # the lazy way
+        endpoint_url = endpoint_url.replace("http:/", "http://")
 
         querystring = {
             "issueId": issue_id,
@@ -42,22 +49,79 @@ class JiraService:
         }
 
         response = requests.request(
-            "GET", url, data=payload, headers=headers, params=querystring)
-        repositories = response.json()["detail"]["repositories"]
+            "GET", endpoint_url, data=payload, headers=headers, params=querystring)
+        result = json.loads(response.text)
+        repositories = result["detail"][0]["repositories"]
         return repositories
 
     def get_project_version_infos(self, version):
         data = self.jiraInstance.get_project_versions_paginated(
             self.config["project-key"], limit=50)
         versionData = next(
-            filter(lambda x: x["name"] == "{0}.{1}".format(
-                self.config["project-key"], version), data["values"]), None)
+            filter(lambda x: x["name"] == version, data["values"]), None)
+
+        # Validation
+
+        if "name" not in versionData:
+            versionData["name"] = ""
+        if "id" not in versionData:
+            versionData["id"] = ""
+        if "description" not in versionData:
+            versionData["description"] = ""
+        if "released" not in versionData:
+            versionData["released"] = ""
+        if "startDate" not in versionData:
+            versionData["startDate"] = ""
+        if "releaseDate" not in versionData:
+            versionData["releaseDate"] = ""
 
         return versionData
 
     def get_project_version_issues(self, versionId):
-        jql_query = "project = {0} AND fixVersion = {1} order by key".format(
+        jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
             self.config["project-key"], versionId)
 
         data = self.jiraInstance.jql(jql_query)["issues"]
         return data
+
+    def printConfluenceMarkup(self, versionId):
+        issues = self.get_project_version_issues(versionId)
+
+        content = "|| Ticket JIRA || Projects || Status || Summary || Remarques ||\n"
+        rows = ""
+        for x in issues:
+            repositories = self.get_repositories_from_issue(x["id"])
+            concatRepos = ""
+
+            if len(repositories) > 0:
+                for r in repositories:
+                    concatRepos = concatRepos + r["name"] + ", "
+
+            if concatRepos == "":
+                concatRepos = " "
+            row = "||{ticket}|{repos}|{status}|{summary}|{remarques}|".format(
+                ticket=x["key"], repos=concatRepos, status=x["fields"]["status"]["name"], summary=x["fields"]["summary"].replace("|", "-"), remarques=" ")
+            rows = rows + row + "\n"
+
+        content = content + rows
+        return content
+
+    def printIssues(self, versionId):
+        issues = self.get_project_version_issues(versionId)
+        table = PrettyTable()
+        table.field_names = ["Key", "Repositories", "Status"]
+
+        for x in issues:
+            repositories = self.get_repositories_from_issue(x["id"])
+            concatRepos = ""
+            # for r in repositories:
+            #     concatRepos + r["name"] + " "
+            if len(repositories) > 0:
+                table.add_row([x["key"], repositories[0]["name"],
+                               x["fields"]["status"]["name"]])
+            else:
+                table.add_row([x["key"], "None",
+                               x["fields"]["status"]["name"]])
+
+        output = "----------Issues----------\n{0}".format(table)
+        return output

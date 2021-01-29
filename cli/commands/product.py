@@ -35,23 +35,32 @@ def versions(ctx):
 @click.pass_context
 @click.option('-v', '--product-version', default=False)
 @click.option('--changes/--no-changes', required=False, default=False)
-def tickets(ctx, product_version, changes):
+@click.option('--confluence/--no-confluence', required=False, default=False)
+def tickets(ctx, product_version, changes, confluence):
     """Lists all components of a product"""
 
+    product_version = product_version.strip()
     versionInfo = jiraInstance.get_project_version_infos(product_version)
-    output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
-    print(output.format(
-        versionInfo["id"],
-        versionInfo["name"],
-        versionInfo["description"],
-        versionInfo["released"],
-        versionInfo["startDate"],
-        versionInfo["releaseDate"]))
 
-    if changes:
-        print("----------Issues----------")
-        issues = jiraInstance.get_project_version_issues(versionInfo["id"])
-        printIssues(issues)
+    if confluence:
+        confMarkup = jiraInstance.printConfluenceMarkup(versionInfo["id"])
+        print(confMarkup)
+    else:
+        output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"
+
+        if versionInfo is not None:
+            print("test")
+            print(output.format(
+                versionInfo["id"],
+                versionInfo["name"],
+                versionInfo["description"],
+                versionInfo["released"],
+                versionInfo["startDate"],
+                versionInfo["releaseDate"]))
+
+        if changes:
+            output = jiraInstance.printIssues(versionInfo["id"])
+            print(output)
 
 
 @product.command()
@@ -60,14 +69,3 @@ def info(ctx):
     """Displays info about a product"""
 
     print("product info here")
-
-
-def printIssues(issues):
-    table = PrettyTable()
-    table.field_names = ["Key", "Status"]
-
-    for x in issues:
-        table.add_row([x["key"],
-                       x["fields"]["status"]["name"]])
-    print("----------Issues----------")
-    print(table)
