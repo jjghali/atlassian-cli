@@ -44,6 +44,7 @@ python -m debugpy --listen 5678 cli/app.py
 ### Features
 * Note de livraison qui affiche les etapes de livraison (comme les notes de livraison mpm)
 * Changelog
+* Conversion de wiki markup a storage format et ajout des checklist manquante
 
 ### Addding pip dependencies
 After adding a new module to the project you will need to update the requirements.txt file in order for it to have the new module. You cand do this by running the following command.
@@ -51,8 +52,13 @@ After adding a new module to the project you will need to update the requirement
 ```
 pip freeze > requirements.txt
 ```
-
+## Troubleshoot
+```
+Add --trusted-host files.pythonhosted.org to pip if you have issues with cert validation if you are behind a proxy.
+```
 
 ## Doc
 https://pypi.org/project/atlassian-python-api/
 https://click.palletsprojects.com/en/7.x/
+https://confluence.atlassian.com/doc/macros-139387.html
+https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html

@@ -21,6 +21,10 @@ class JiraService:
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
         pass
+    
+    def close_ticket(self, ticket_name):
+        """closes a ticket"""
+        pass
 
     def get_changelog(self, ticket_name):
         """get commits and repos changed linked to ticket"""
@@ -114,8 +118,7 @@ class JiraService:
         for x in issues:
             repositories = self.get_repositories_from_issue(x["id"])
             concatRepos = ""
-            # for r in repositories:
-            #     concatRepos + r["name"] + " "
+
             if len(repositories) > 0:
                 table.add_row([x["key"], repositories[0]["name"],
                                x["fields"]["status"]["name"]])
