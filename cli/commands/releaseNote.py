@@ -1,11 +1,6 @@
 import click
 import json
-from atlassian import Bitbucket
-from atlassian import Jira
-from atlassian import Confluence
-
-bitbucketInstance = {}
-jiraInstance = {}
+from services import ConfluenceService
 
 
 @click.group()
@@ -16,7 +11,14 @@ def releasenote(ctx):
 
 
 @releasenote.command()
-@click.pass_context
+# @click.pass_context
 @click.option('-v', '--version', default=False)
-def generate(ctx, version):
+@click.option('-p', '--project-key', default=False)
+@click.option('--storage-format/--no-storage-format', required=False, default=False)
+def generate(version, project_key, storage_format):
+    version = version.strip()
+    project_key = project_key.strip()
+
+    confluenceService = ConfluenceService()
+    confluenceService.generate_releasenote(project_key, version)
     pass

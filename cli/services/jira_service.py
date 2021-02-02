@@ -21,7 +21,7 @@ class JiraService:
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
         pass
-    
+
     def close_ticket(self, ticket_name):
         """closes a ticket"""
         pass
@@ -58,9 +58,9 @@ class JiraService:
         repositories = result["detail"][0]["repositories"]
         return repositories
 
-    def get_project_version_infos(self, version):
+    def get_project_version_infos(self, project_key, version):
         data = self.jiraInstance.get_project_versions_paginated(
-            self.config["project-key"], limit=50)
+            project_key, limit=50)
         versionData = next(
             filter(lambda x: x["name"] == version, data["values"]), None)
 
@@ -80,6 +80,9 @@ class JiraService:
             versionData["releaseDate"] = ""
 
         return versionData
+
+    def get_default_project_version_infos(self, version):
+        return get_project_version_infos(self.config["project-key"], version)
 
     def get_project_version_issues(self, versionId):
         jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
