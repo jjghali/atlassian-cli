@@ -1,7 +1,7 @@
 import click
 import pprint36 as pprint
 
-from pretty_tables import PrettyTables
+from prettytable import PrettyTable
 from services import BitbucketService
 
 

@@ -1,0 +1,101 @@
+{section:border=false}
+
+{column:width=66%}
+h2. Objectifs
+{tip}
+<Objectifs ici>
+{tip}
+
+h2. Approbation
+
+h3. Validation PO/Tech Lead
+
+h3. Validation fonctionnelle
+
+h3. Champions de la MeP
+_un champion ne peut qu'approuver qu'une fois la section validation complétée_
+{column}
+
+{column}
+{info:title=Documentation sur le processus}
+
+* [Étapes d'une mise en Production|https://confluence.nomdedomaine.com/pages/viewpage.action?pageId=52300900]
+* [Étape d'une mise en Production visuellement|https://confluence.nomdedomaine.com/pages/viewpage.action?pageId=951097512]
+
+{info}
+
+{toc:outline=true}
+{column}
+{section}
+
+{section:border=false}
+{column}
+h2. [HPSM|https://gisti.priv.nomdedomaine.com/sm/index.do]
+Numéro de changement: <numero de changment ici>
+
+{expand}
+Service informatique: 
+
+Modèle de changement HP-SM: 
+
+Composantes applicatives: 
+
+Groupe d'affectation: 
+
+(voir page [Contacts et information HPSM|https://confluence.nomdedomaine.com/display/DDCDP/Contacts+et+information+HPSM])
+{expand}
+
+{column}
+{section}
+
+{section}
+{column}
+h2. Résumé de la livraison
+<Texte ici>
+
+||*Récits, améliorations*||*Anomalie*||
+|{jiraissues:anonymous=false| columns=key,summary,type,priority,status,resolution | jqlQuery=project = %project-key% AND fixVersion = %fixversion% AND ( type = Story OR type = Improvement )}|{jiraissues:anonymous=false| columns=key,summary,type,priority,status,resolution | jqlQuery=project = %project-key% AND fixVersion = %fixversion% AND type = "Bug" }|
+
+h3. Règles d'affaires
+N/A
+
+h3. Composantes d'infrastructure à livrer dans l'ordre
+_Décrire la liste des composantes avec la version dans l'environnement en cours de test. La raison permet de décrire et valider l'objectif de la mise en production de cette composante._
+
+
+
+_Voir dans le Portail Infonuagique de TransfoDev, pour valider la version des composantes réellement livrés._
+
+h3. Tâches manuelles ou pré-requis avant la mise en Production
+<checklist ici>
+
+h3. Feature livré avec toggle à off et justification
+||Description||Nom du toggle||Justification||
+| | | |
+{column}
+{section}
+
+{section}
+{column}
+h2. Validation avant la mise en Production
+
+
+
+h3. Questions générale
+
+h3. Valider les configurations
+h4. À valider
+
+h3. Valider l'exécution des tests
+
+h4. Résumé de l'exécution des tests auto
+
+h4. Test manuel/contre validation des tests auto
+|| Fonctionnalité || Cas de Test ||	État du test auto || Validation manuel || Cas Zephyr ||
+
+h3. Valider les appliucations
+_Comparer les versions JIRA dans les commits avec les tickets JIRA dans la note de livraison._
+
+%validate_task%
+{column}
+{section}
