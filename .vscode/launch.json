@@ -12,10 +12,10 @@
             "console": "integratedTerminal",
             "python": "${command:python.interpreterPath}",
             "args": [
-                "product",
-                "tickets",
-                "-v 0.0.1",
-                "--changes"
+                "releasenote",
+                "generate",
+                "-v PHABIT.8.1.0",
+                "-p PHABIT"
             ]
         }
     ]
