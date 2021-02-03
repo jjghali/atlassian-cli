@@ -4,6 +4,7 @@ import json
 from atlassian import Jira
 from utils import ConfigurationManager
 import pprint36 as pprint
+import ssl
 from prettytable import PrettyTable
 
 
@@ -12,11 +13,13 @@ class JiraService:
 
     def __init__(self):
         self.config = self.confManager.load_config()
+
         if self.config is not None:
             self.jiraInstance = Jira(
                 url=self.config["jira-url"],
                 username=self.config["credentials"]["username"],
-                password=self.config["credentials"]["password"])
+                password=self.config["credentials"]["password"],
+                verify_ssl=False)
 
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
@@ -36,9 +39,9 @@ class JiraService:
         endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
             jira_url=self.config["jira-url"])
 
-        endpoint_url = endpoint_url.replace("//", "/")
+        # endpoint_url = endpoint_url.replace("//", "/")
         # the lazy way
-        endpoint_url = endpoint_url.replace("http:/", "http://")
+        # endpoint_url = endpoint_url.replace("http:/", "http://")
 
         querystring = {
             "issueId": issue_id,
@@ -53,7 +56,7 @@ class JiraService:
         }
 
         response = requests.request(
-            "GET", endpoint_url, data=payload, headers=headers, params=querystring)
+            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=False)
         result = json.loads(response.text)
         repositories = result["detail"][0]["repositories"]
         return repositories
@@ -84,15 +87,21 @@ class JiraService:
     def get_default_project_version_infos(self, version):
         return get_project_version_infos(self.config["project-key"], version)
 
-    def get_project_version_issues(self, versionId):
+    def get_project_version_issues_default(self, versionId):
+        return get_project_version_issues(self.config["project-key"],  versionId)
+
+    def get_project_version_issues(self, project_key, versionId):
         jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
-            self.config["project-key"], versionId)
+            project_key, versionId)
 
         data = self.jiraInstance.jql(jql_query)["issues"]
         return data
 
-    def printConfluenceMarkup(self, versionId):
-        issues = self.get_project_version_issues(versionId)
+    def printConfluenceMarkup_default(self, versionId):
+        printConfluenceMarkup(self.config["project-key"], versionId)
+
+    def printConfluenceMarkup(self, project_key, versionId):
+        issues = self.get_project_version_issues(project_key, versionId)
 
         content = "|| Ticket JIRA || Projects || Status || Summary || Remarques ||\n"
         rows = ""
