@@ -11,14 +11,27 @@ def releasenote(ctx):
 
 
 @releasenote.command()
-# @click.pass_context
-@click.option('-v', '--version', default=False)
-@click.option('-p', '--project-key', default=False)
-@click.option('--storage-format/--no-storage-format', required=False, default=False)
-def generate(version, project_key, storage_format):
+@click.option('-v', '--version', default="")
+@click.option('-s', '--space-key', required=False, default="")
+@click.option('-p', '--project-key', required=False, default="")
+@click.option('-i', '--parent-page-id', required=False, default="")
+@click.option('-t', '--template-file', required=False, default="")
+@click.option('--create-page/--no-create-page', required=False, default=True)
+def generate(version, space_key, project_key, parent_page_id, template_file, create_page):
     version = version.strip()
     project_key = project_key.strip()
+    space_key = space_key.strip()
+    parent_page_id = parent_page_id.strip()
 
-    confluenceService = ConfluenceService()
-    confluenceService.generate_releasenote(project_key, version)
-    pass
+    confluence_service = ConfluenceService()
+    releasenote = confluence_service.generate_releasenote(project_key, version)
+
+    if create_page:
+        if space_key is not None or parent_page_id is not None:
+            confluence_service.push_releasenote(
+                space_key, version, parent_page_id, releasenote)
+
+        else:
+            print("ERROR: Missing space-key or parent-page-id options.")
+    else:
+        print(releasenote)
