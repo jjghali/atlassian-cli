@@ -43,7 +43,8 @@ def tickets(ctx, product_version, changes, confluence):
         product_version)
 
     if confluence:
-        confMarkup = jiraService.printConfluenceMarkup(versionInfo["id"])
+        confMarkup = jiraService.printConfluenceMarkup_default(
+            versionInfo["id"])
         print(confMarkup)
     else:
         output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"

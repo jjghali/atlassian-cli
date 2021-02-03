@@ -1,4 +1,5 @@
 import click
+import os
 from sys import argv
 
 from commands import product
@@ -7,10 +8,19 @@ from commands import releasenote
 from commands import config
 from commands import changelog
 
+
 @click.group(help="help text here")
+@click.option('--proxy', required=False, default=None)
 @click.pass_context
-def cli(ctx):
+def cli(ctx, proxy):
+    if proxy:
+        os.environ['http_proxy'] = proxy
+        os.environ['HTTP_PROXY'] = proxy
+        os.environ['https_proxy'] = proxy
+        os.environ['HTTPS_PROXY'] = proxy
+
     ctx.ensure_object(dict)
+
 
 @cli.command()
 def version():
