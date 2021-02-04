@@ -5,17 +5,16 @@ from prettytable import PrettyTable
 from services import BitbucketService
 
 
-bitbucketInstance = BitbucketService()
-jiraInstance = {}
+jira_service = {}
 
 
 @click.group()
 @click.pass_context
 def component(ctx):
     """Get information about a component"""
-    # context_parent = click.get_current_context()
-    # ctx.ensure_object(dict)
-    # ctx.obj['COMPONENT_NAME'] = component_name
+    context_parent = click.get_current_context(silent=True)
+    ctx.ensure_object(dict)
+    ctx.obj['skipssl'] = context_parent.obj["skipssl"]
     pass
 
 
@@ -25,7 +24,10 @@ def component(ctx):
 @click.option('-v', '--version', default="")
 @click.option('--include-unstable/--only-stable', required=False, default=False)
 def release(ctx, component_name, version, include_unstable):
-    changelog = bitbucketInstance.getRelease(component_name, version)
+    component_name = component_name.strip()
+    version = version.strip()
+    bitbucket_service = BitbucketService(ctx.obj['skipssl'])
+    changelog = bitbucket_service.getRelease(component_name, version)
     print(changelog)
 
 

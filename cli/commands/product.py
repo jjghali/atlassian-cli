@@ -10,7 +10,7 @@ def product(ctx):
     """Get information about a product"""
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
-    ctx.obj['skipssl'] = context_parent.skipssl
+    ctx.obj['skipssl'] = context_parent.obj["skipssl"]
 
     self.jiraService = JiraService(ctx.obj['skipssl'])
     pass
@@ -35,7 +35,6 @@ def versions(ctx):
 @product.command()
 @click.pass_context
 @click.option('-v', '--product-version', required=True, default=False)
-@click.option('-', '--product-version', required=False, default=False)
 @click.option('--changes/--no-changes', required=False, default=False)
 @click.option('--confluence/--no-confluence', required=False, default=False)
 def tickets(ctx, product_version, changes, confluence):
