@@ -11,15 +11,16 @@ from prettytable import PrettyTable
 class JiraService:
     confManager = ConfigurationManager()
 
-    def __init__(self):
+    def __init__(self, skipssl):
         self.config = self.confManager.load_config()
+        self.skipssl = skipssl
 
         if self.config is not None:
             self.jiraInstance = Jira(
                 url=self.config["jira-url"],
                 username=self.config["credentials"]["username"],
                 password=self.config["credentials"]["password"],
-                verify_ssl=False)
+                verify_ssl=self.skipssl)
 
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
@@ -52,7 +53,7 @@ class JiraService:
         }
 
         response = requests.request(
-            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=False)
+            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.skipssl)
         result = json.loads(response.text)
         repositories = result["detail"][0]["repositories"]
         return repositories

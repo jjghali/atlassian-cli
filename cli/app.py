@@ -10,16 +10,12 @@ from commands import changelog
 
 
 @click.group(help="help text here")
-@click.option('--proxy', required=False, default=None)
+@click.option('--skipssl/--no-skipssl', default=False)
 @click.pass_context
-def cli(ctx, proxy):
-    if proxy:
-        os.environ['http_proxy'] = proxy
-        os.environ['HTTP_PROXY'] = proxy
-        os.environ['https_proxy'] = proxy
-        os.environ['HTTPS_PROXY'] = proxy
-
+def cli(ctx, skipssl):
     ctx.ensure_object(dict)
+    ctx.obj['skipssl'] = not skipssl
+    pass
 
 
 @cli.command()
