@@ -1,0 +1,9 @@
+bitbucket-url: https://bitbucket-url/
+confluence-url: https://confluence-url/
+credentials:
+  password: "password"
+  username: username
+  base64: base64cred
+jira-url: https://jira-url/
+product-name: habitation-achat
+project-key: project-key
