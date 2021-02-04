@@ -36,7 +36,7 @@ class ConfluenceService:
         versionData = self.jiraService.get_project_version_infos(
             project_key, version)
 
-        tasks = self.jiraService.printConfluenceMarkup(
+        tasks = self.jiraService.get_issues_confluence_markup(
             project_key, versionData["id"])
 
         releasenote = self.releasenote_template.replace(
@@ -76,7 +76,19 @@ class ConfluenceService:
             print("Releasenote template file is missing.")
 
     def load_product_changelog_template(self):
-        pass
+        try:
+            file = open("templates/product-changelog-template.gdlf",
+                        encoding='utf-8', mode="r")
+            self.product_changelog_template = file.read()
+
+        except IOError:
+            print("Product changelog template file is missing.")
 
     def load_component_changelog_template(self):
-        pass
+        try:
+            file = open("templates/component-changelog-template.gdlf",
+                        encoding='utf-8', mode="r")
+            self.component_changelog_template = file.read()
+
+        except IOError:
+            print("Component changelog template file is missing.")
