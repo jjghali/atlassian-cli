@@ -39,10 +39,6 @@ class JiraService:
         endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
             jira_url=self.config["jira-url"])
 
-        # endpoint_url = endpoint_url.replace("//", "/")
-        # the lazy way
-        # endpoint_url = endpoint_url.replace("http:/", "http://")
-
         querystring = {
             "issueId": issue_id,
             "applicationType": "stash",
@@ -97,10 +93,10 @@ class JiraService:
         data = self.jiraInstance.jql(jql_query)["issues"]
         return data
 
-    def printConfluenceMarkup_default(self, versionId):
-        printConfluenceMarkup(self.config["project-key"], versionId)
+    def get_default_issues_confluence_markup(self, versionId):
+        get_issues_confluence_markup(self.config["project-key"], versionId)
 
-    def printConfluenceMarkup(self, project_key, versionId):
+    def get_issues_confluence_markup(self, project_key, versionId):
         issues = self.get_project_version_issues(project_key, versionId)
 
         content = "|| Ticket JIRA || Projects || Status || Summary || Remarques ||\n"
@@ -122,7 +118,8 @@ class JiraService:
         content = content + rows
         return content
 
-    def printIssues(self, versionId):
+    # Creates the issues refered to a jira product
+    def get_issues_printable(self, versionId):
         issues = self.get_project_version_issues(versionId)
         table = PrettyTable()
         table.field_names = ["Key", "Repositories", "Status"]
