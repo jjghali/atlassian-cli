@@ -11,11 +11,11 @@ def releasenote(ctx):
 
 
 @releasenote.command()
-@click.option('-v', '--version', default="")
-@click.option('-s', '--space-key', required=False, default="")
-@click.option('-p', '--project-key', required=False, default="")
-@click.option('-i', '--parent-page-id', required=False, default="")
-@click.option('-t', '--template-file', required=False, default="")
+@click.option('-v', '--version', required=True, default="")
+@click.option('-s', '--space-key', required=True, default="")
+@click.option('-p', '--project-key', required=True, default="")
+@click.option('-i', '--parent-page-id', required=True, default="")
+@click.option('-t', '--template-file', required=True, default="")
 @click.option('--create-page/--no-create-page', required=False, default=True)
 def generate(version, space_key, project_key, parent_page_id, template_file, create_page):
     version = version.strip()

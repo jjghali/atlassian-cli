@@ -43,7 +43,7 @@ def tickets(ctx, product_version, changes, confluence):
         product_version)
 
     if confluence:
-        confMarkup = jiraService.printConfluenceMarkup_default(
+        confMarkup = jiraService.get_default_issues_confluence_markup(
             versionInfo["id"])
         print(confMarkup)
     else:
@@ -60,7 +60,7 @@ def tickets(ctx, product_version, changes, confluence):
                 versionInfo["releaseDate"]))
 
         if changes:
-            output = jiraService.printIssues(versionInfo["id"])
+            output = jiraService.get_issues_printable(versionInfo["id"])
             print(output)
 
 
