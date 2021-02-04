@@ -14,18 +14,19 @@ class ConfluenceService:
     releasenote_template = ""
     product_changelog_template = ""
     component_changelog_template = ""
-    jiraService = JiraService()
+    
 
-    def __init__(self):
-
+    def __init__(self, skipssl):
         self.config = self.confManager.load_config()
+        self.skipssl = skipssl
+        self.jiraService = JiraService(skipssl)
 
         if self.config is not None:
             self.confluence = Confluence(
                 url=self.config["confluence-url"],
                 username=self.config["credentials"]["username"],
                 password=self.config["credentials"]["password"],
-                verify_ssl=False
+                verify_ssl=self.skipssl
             )
 
             self.load_releasenote_template()
@@ -73,7 +74,7 @@ class ConfluenceService:
             self.releasenote_template = file.read()
 
         except IOError:
-            print("Releasenote template file is missing.")
+            print("Warning: Releasenote template file is missing.")
 
     def load_product_changelog_template(self):
         try:
@@ -82,7 +83,7 @@ class ConfluenceService:
             self.product_changelog_template = file.read()
 
         except IOError:
-            print("Product changelog template file is missing.")
+            print("Warning: Product changelog template file is missing.")
 
     def load_component_changelog_template(self):
         try:
@@ -91,4 +92,4 @@ class ConfluenceService:
             self.component_changelog_template = file.read()
 
         except IOError:
-            print("Component changelog template file is missing.")
+            print("Warning: Component changelog template file is missing.")

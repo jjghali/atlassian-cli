@@ -2,16 +2,18 @@ import click
 import pprint36 as pprint
 from services import JiraService
 
-jiraService = JiraService()
-
 
 @click.group()
 # @click.option('-n', '--product-name', default=False)
 @click.pass_context
 def product(ctx):
     """Get information about a product"""
-    context_parent = click.get_current_context()
+    context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
+    ctx.obj['skipssl'] = context_parent.skipssl
+
+    self.jiraService = JiraService(ctx.obj['skipssl'])
+    pass
 
 
 @product.command()
@@ -32,7 +34,8 @@ def versions(ctx):
 
 @product.command()
 @click.pass_context
-@click.option('-v', '--product-version', default=False)
+@click.option('-v', '--product-version', required=True, default=False)
+@click.option('-', '--product-version', required=False, default=False)
 @click.option('--changes/--no-changes', required=False, default=False)
 @click.option('--confluence/--no-confluence', required=False, default=False)
 def tickets(ctx, product_version, changes, confluence):
