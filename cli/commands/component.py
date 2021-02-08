@@ -21,13 +21,15 @@ def component(ctx):
 @component.group(chain=False, invoke_without_command=True)
 @click.pass_context
 @click.option('-c', '--component-name', default=False)
+@click.option('-p', '--product-name', default=False)
 @click.option('-v', '--version', default="")
 @click.option('--include-unstable/--only-stable', required=False, default=False)
-def release(ctx, component_name, version, include_unstable):
+def release(ctx, component_name, product_name, version, include_unstable):
     component_name = component_name.strip()
     version = version.strip()
     bitbucket_service = BitbucketService(ctx.obj['skipssl'])
-    changelog = bitbucket_service.getRelease(component_name, version)
+    changelog = bitbucket_service.get_release(
+        product_name, component_name, version)
     print(changelog)
 
 

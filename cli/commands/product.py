@@ -24,6 +24,13 @@ def list():
 
 @product.command()
 @click.pass_context
+def info():
+    """Provides info about a product release"""
+    pass
+
+
+@product.command()
+@click.pass_context
 def versions(ctx):
     """Lists all the deployed versions of a product"""
 
