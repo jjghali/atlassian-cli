@@ -19,11 +19,11 @@ def releasenote(ctx):
 @click.pass_context
 @click.option('-v', '--version', required=True, default="")
 @click.option('-s', '--space-key', required=True, default="")
-@click.option('-p', '--project-key', required=True, default="")
+@click.option('-j', '--project-key', required=True, default="")
 @click.option('-i', '--parent-page-id', required=True, default="")
 @click.option('-t', '--template-file', required=True, default="")
-@click.option('--create-page/--no-create-page', required=False, default=True)
-def generate(ctx, version, space_key, project_key, parent_page_id, template_file, create_page):
+@click.option('--dry-run/--no-dry-run', required=False, default=False)
+def generate(ctx, version, space_key, project_key, parent_page_id, template_file, dry_run):
     version = version.strip()
     project_key = project_key.strip()
     space_key = space_key.strip()
@@ -32,7 +32,7 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
     confluence_service = ConfluenceService(ctx.obj['skipssl'])
     releasenote = confluence_service.generate_releasenote(project_key, version)
 
-    if create_page:
+    if not dry_run:
         if space_key is not None or parent_page_id is not None:
             confluence_service.push_releasenote(
                 space_key, version, parent_page_id, releasenote)

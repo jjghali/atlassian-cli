@@ -24,9 +24,9 @@ class BitbucketService:
                 username=self.config["credentials"]["username"],
                 password=self.config["credentials"]["password"])
 
-    def getRelease(self, component_name, version):
+    def get_release(self, product_name, component_name, version):
 
-        result = self.bitbucketInstance.get_project_tags(self.config['product-name'],
+        result = self.bitbucketInstance.get_project_tags(product_name,
                                                          component_name, version)
         tags = result["values"]
         target_tag = next(
