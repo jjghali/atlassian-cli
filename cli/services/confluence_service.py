@@ -4,6 +4,7 @@ import pprint36 as pprint
 from datetime import datetime
 from atlassian import Confluence
 from .jira_service import JiraService
+from .bitbucket_service import BitbucketService
 from utils import ConfigurationManager
 
 
@@ -14,12 +15,12 @@ class ConfluenceService:
     releasenote_template = ""
     product_changelog_template = ""
     component_changelog_template = ""
-    
 
     def __init__(self, skipssl):
         self.config = self.confManager.load_config()
         self.skipssl = skipssl
-        self.jiraService = JiraService(skipssl)
+        self.jira_service = JiraService(skipssl)
+        self.bitbucket_service = BitbucketService(skipssl)
 
         if self.config is not None:
             self.confluence = Confluence(
@@ -34,10 +35,10 @@ class ConfluenceService:
             self.load_component_changelog_template()
 
     def generate_releasenote(self, project_key, version):
-        versionData = self.jiraService.get_project_version_infos(
+        versionData = self.jira_service.get_project_version_infos(
             project_key, version)
 
-        tasks = self.jiraService.get_issues_confluence_markup(
+        tasks = self.jira_service.get_issues_confluence_markup(
             project_key, versionData["id"])
 
         releasenote = self.releasenote_template.replace(
@@ -59,13 +60,60 @@ class ConfluenceService:
 
         title = "{0} - {1}".format(semantic_version, current_date)
 
-        converted_releasenote = self.confluence.convert_wiki_to_storage(
-            releasenote)["value"]
+        self.push_to_confluence(parent_page_id, title, releasenote)
+
+    def push_changelog(self, name, space_key, version, parent_page_id, isComponent=False):
+        changelog_content = None
+        current_date = datetime.today().strftime("%Y-%m-%d")
+
+        semantic_version = ""
+
+        m = re.search(
+            "(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)", version)
+
+        if m:
+            semantic_version = m.group(1)
+
+        page_title = "{0} - {1} - {2}".format(name,
+                                              semantic_version,
+                                              current_date)
+
+        if isComponent:
+            changelog_content = self.generate_component_changelog()
+            print("creates component changelog")
+        else:
+            changelog_content = self.generate_product_changelog()
+            print("creates product changelog")
+
+        if changelog_content:
+            print("")
+        else:
+            print("ERROR: An Issue occured while trying to generate the changelog")
+
+        self.push_to_confluence(parent_page_id, page_title, changelog_content)
+
+    def generate_component_changelog(self, component_name, product_name, version):
+        release = self.bitbucket_service.get_release(
+            product_name, component_name, version)
+
+        changelog_content = self.component_changelog_template.replace(
+            "%component_version%", version)
+        changelog_content = changelog_content.replace("%jira_tasks%", version)
+
+        return changelog_content
+
+    def generate_product_changelog(self):
+        changelog_content = ""
+        return changelog_content
+
+    def push_to_confluence(self, parent_page_id, title, content):
+        converted_content = self.confluence.convert_wiki_to_storage(
+            content)["value"]
 
         self.confluence.update_or_create(
-            parent_page_id, title, converted_releasenote, representation='storage')
+            parent_page_id, title, converted_content, representation='storage')
 
-    # Converts content made with Confluence wiki markup to
+        print("Page \"{0}\" is pushed to confluence".format(title))
 
     def load_releasenote_template(self):
         try:

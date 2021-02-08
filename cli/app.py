@@ -24,11 +24,11 @@ def version():
     print("app version here")
 
 
+cli.add_command(changelog)
 cli.add_command(config)
 cli.add_command(releasenote)
 cli.add_command(product)
 cli.add_command(component)
-cli.add_command(changelog)
 
 if __name__ == '__main__':
     cli()
