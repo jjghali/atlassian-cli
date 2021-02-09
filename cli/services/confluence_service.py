@@ -5,7 +5,7 @@ from datetime import datetime
 from atlassian import Confluence
 from .jira_service import JiraService
 from .bitbucket_service import BitbucketService
-from utils import ConfigurationManager
+from cli.utils import ConfigurationManager
 
 
 class ConfluenceService:

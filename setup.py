@@ -1,16 +1,22 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 deps = [
     'click',
     'atlassian-python-api',
-    'pyyaml'
+    'pyyaml',
+    'prettytable',
+    'semantic-version',
+    'pprint36',
+    'requests'
 ]
 
 
 setup(
-    name='gandalf',
+    name='acli',
     version='0.1',
+    packages=find_packages(),
     py_modules=['cli', "commands"],
+    include_package_data=True,
     install_requires=deps,
     entry_points='''
         [console_scripts]

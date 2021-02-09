@@ -2,7 +2,7 @@ import click
 import pprint36 as pprint
 
 from prettytable import PrettyTable
-from services import BitbucketService
+from cli.services import BitbucketService
 
 
 jira_service = {}

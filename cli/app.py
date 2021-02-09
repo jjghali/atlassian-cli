@@ -2,11 +2,11 @@ import click
 import os
 from sys import argv
 
-from commands import product
-from commands import component
-from commands import releaseNote
-from commands import config
-from commands import changelog
+from cli.commands import product
+from cli.commands import component
+from cli.commands import releaseNote
+from cli.commands import config
+from cli.commands import changelog
 
 
 @click.group(help="help text here")
