@@ -1,6 +1,6 @@
 import click
 import pprint36 as pprint
-from services import JiraService
+from cli.services import JiraService
 
 
 @click.group()

@@ -2,7 +2,7 @@ import base64
 import requests
 import json
 from atlassian import Jira
-from utils import ConfigurationManager
+from cli.utils import ConfigurationManager
 import pprint36 as pprint
 import ssl
 from prettytable import PrettyTable

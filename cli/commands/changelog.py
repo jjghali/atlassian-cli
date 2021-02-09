@@ -1,7 +1,7 @@
 import click
 import json
-from services import ConfluenceService
-from services import BitbucketService
+from cli.services import ConfluenceService
+from cli.services import BitbucketService
 
 skipssl = False
 
