@@ -30,11 +30,12 @@ class ConfluenceService:
                 verify_ssl=self.skipssl
             )
 
-            self.load_releasenote_template()
             self.load_product_changelog_template()
             self.load_component_changelog_template()
 
-    def generate_releasenote(self, project_key, version):
+    def generate_releasenote(self, project_key, version, template_file):
+        self.load_releasenote_template(template_file)
+
         versionData = self.jira_service.get_project_version_infos(
             project_key, version)
 
@@ -115,9 +116,9 @@ class ConfluenceService:
 
         print("Page \"{0}\" is pushed to confluence".format(title))
 
-    def load_releasenote_template(self):
+    def load_releasenote_template(self, file_path):
         try:
-            file = open("templates/releasenote-template.gdlf",
+            file = open(file_path,
                         encoding='utf-8', mode="r")
             self.releasenote_template = file.read()
 
