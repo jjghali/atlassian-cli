@@ -4,7 +4,7 @@ from sys import argv
 
 from commands import product
 from commands import component
-from commands import releasenote
+from commands import releaseNote
 from commands import config
 from commands import changelog
 
@@ -26,7 +26,7 @@ def version():
 
 cli.add_command(changelog)
 cli.add_command(config)
-cli.add_command(releasenote)
+cli.add_command(releaseNote)
 cli.add_command(product)
 cli.add_command(component)
 
