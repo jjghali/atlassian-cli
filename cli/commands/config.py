@@ -1,6 +1,6 @@
 
 import click
-from utils import ConfigurationManager
+from cli.utils import ConfigurationManager
 
 confManager = ConfigurationManager()
 

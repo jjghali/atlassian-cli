@@ -4,7 +4,7 @@ import semantic_version
 import requests
 from atlassian import Bitbucket
 from atlassian import Jira
-from utils import ConfigurationManager
+from cli.utils import ConfigurationManager
 
 import pprint36 as pprint
 
