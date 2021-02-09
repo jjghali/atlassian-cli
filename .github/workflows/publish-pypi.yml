@@ -1,0 +1,22 @@
+name: Publish to PyPi
+
+# on:
+#   release:
+#     types: [published]
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  publish-pypi:
+    name: Publish Atlassian CLI to PyPi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: custom-dir/
+          verbose: true
