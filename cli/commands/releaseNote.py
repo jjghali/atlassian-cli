@@ -30,7 +30,8 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
     parent_page_id = parent_page_id.strip()
 
     confluence_service = ConfluenceService(ctx.obj['skipssl'])
-    releasenote = confluence_service.generate_releasenote(project_key, version)
+    releasenote = confluence_service.generate_releasenote(
+        project_key, version, template_file)
 
     if not dry_run:
         if space_key is not None or parent_page_id is not None:
@@ -40,4 +41,4 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
         else:
             print("ERROR: Missing space-key or parent-page-id options.")
     else:
-        print(releasenote)
+        print("This was a dry-run test")
