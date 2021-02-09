@@ -7,7 +7,7 @@ skipssl = False
 
 @click.group()
 @click.pass_context
-def releasenote(ctx):
+def releaseNote(ctx):
     """Creates a release note one on Confluence"""
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
@@ -15,7 +15,7 @@ def releasenote(ctx):
     pass
 
 
-@releasenote.command()
+@releaseNote.command()
 @click.pass_context
 @click.option('-v', '--version', required=True, default="")
 @click.option('-s', '--space-key', required=True, default="")
