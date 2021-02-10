@@ -19,7 +19,7 @@ if os.getenv('RELEASE_VERSION') is NoneType:
 
 setup(
     name='atlcli',
-    version=version,
+    version='0.1.0,
     packages=find_packages(),
     py_modules=['cli', "commands"],
     include_package_data=True,
