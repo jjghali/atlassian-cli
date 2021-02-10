@@ -20,11 +20,10 @@ def component(ctx):
 
 @component.group(chain=False, invoke_without_command=True)
 @click.pass_context
-@click.option('-c', '--component-name', default=False)
-@click.option('-p', '--product-name', default=False)
-@click.option('-v', '--version', default="")
-@click.option('--include-unstable/--only-stable', required=False, default=False)
-def release(ctx, component_name, product_name, version, include_unstable):
+@click.option('-c', '--component-name', default=False, help="Component name")
+@click.option('-p', '--product-name', default=False, help="Product name")
+@click.option('-v', '--version', required=True, default="", help="Component version")
+def release(ctx, component_name, product_name, version):
     component_name = component_name.strip()
     version = version.strip()
     bitbucket_service = BitbucketService(ctx.obj['skipssl'])

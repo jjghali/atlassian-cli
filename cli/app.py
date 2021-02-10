@@ -9,12 +9,22 @@ from cli.commands import config
 from cli.commands import changelog
 
 
-@click.group(help="help text here")
-@click.option('--skipssl/--no-skipssl', default=False)
+@click.group(help="Atlassian CLI")
+@click.option('--skipssl/--no-skipssl', required=False, default=False, help="Skips ssl validation in case you have certificates issues (not recommended)")
+@click.option('--bitbucket-url', required=True, default="", help="Bitbucket URL")
+@click.option('--jira-url', required=True, default="", help="Jira URL")
+@click.option('--confluence-url', required=True, default="", help="Confluence URL")
+@click.option('--username', required=True, default="", help="Username to use for accessing Atlassian products")
+@click.option('--password', required=True, default="", help="Password to use for accessing Atlassian products")
 @click.pass_context
-def cli(ctx, skipssl):
+def cli(ctx, skipssl, bitbucket_url, jira_url, confluence_url, username, password):
     ctx.ensure_object(dict)
     ctx.obj['skipssl'] = not skipssl
+    ctx.obj['bitbucket_url'] = bitbucket_url
+    ctx.obj['jira_url'] = jira_url
+    ctx.obj['confluence_url'] = confluence_url
+    ctx.obj['username'] = username
+    ctx.obj['password'] = password
     pass
 
 

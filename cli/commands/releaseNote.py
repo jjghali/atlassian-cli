@@ -17,12 +17,12 @@ def releaseNote(ctx):
 
 @releaseNote.command()
 @click.pass_context
-@click.option('-v', '--version', required=True, default="")
-@click.option('-s', '--space-key', required=True, default="")
-@click.option('-j', '--project-key', required=True, default="")
-@click.option('-i', '--parent-page-id', required=True, default="")
-@click.option('-t', '--template-file', required=True, default="")
-@click.option('--dry-run/--no-dry-run', required=False, default=False)
+@click.option('-v', '--version', required=True, default="", help="Release/Product version")
+@click.option('-s', '--space-key', required=True, default="", help="Space key for the Confluence space")
+@click.option('-j', '--project-key', required=True, default="", help="Project key used in your Jira project")
+@click.option('-i', '--parent-page-id', required=True, default="", help="Id of the page under which you will create your changelogs")
+@click.option('-t', '--template-file', required=True, default="", help="Path to the template file for your changelog")
+@click.option('--dry-run/--no-dry-run', required=False, default=False, help="Dry run for testing")
 def generate(ctx, version, space_key, project_key, parent_page_id, template_file, dry_run):
     version = version.strip()
     project_key = project_key.strip()
