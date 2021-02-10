@@ -6,7 +6,7 @@ name: Publish to PyPi
 on:
   push:
     tags:
-      - '*.*.*'
+      - "*.*.*"
 
 jobs:
   build-and-publish:
@@ -33,7 +33,7 @@ jobs:
           --user
       - name: Build a binary wheel and a source tarball
         env:
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+          RELEASE_VERSION: ${{ github.ref }}
         run: >-
           python -m
           build
