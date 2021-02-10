@@ -14,7 +14,7 @@ deps = [
 
 version = ""
 
-if os.getenv('RELEASE_VERSION') is None:
+if os.getenv('GITHUB_REF') is None:
     version = "dev"
 
 setup(
