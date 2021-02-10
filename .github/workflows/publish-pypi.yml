@@ -16,6 +16,8 @@ jobs:
       - uses: actions/checkout@master
       - name: Fetch all history for all tags and branches
         run: git fetch --prune --unshallow
+      - name: Triggered tag
+        run: echo $GITHUB_REF
       - name: Set up Python 3.9
         uses: actions/setup-python@v1
         with:
@@ -35,8 +37,6 @@ jobs:
           --outdir dist/
           .
       - name: Publish distribution 📦 to Test PyPI
-        env:
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
