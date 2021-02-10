@@ -12,14 +12,14 @@ deps = [
 
 
 setup(
-    name='acli',
-    version='0.0.1',
+    name='atlcli',
+    version='0.0.2',
     packages=find_packages(),
     py_modules=['cli', "commands"],
     include_package_data=True,
     install_requires=deps,
     entry_points='''
         [console_scripts]
-        gandalf=cli.app:cli
+        atlcli=cli.app:cli
     ''',
 )

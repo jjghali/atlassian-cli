@@ -5,33 +5,28 @@ from datetime import datetime
 from atlassian import Confluence
 from .jira_service import JiraService
 from .bitbucket_service import BitbucketService
-from cli.utils import ConfigurationManager
 
 
 class ConfluenceService:
-
-    confManager = ConfigurationManager()
 
     releasenote_template = ""
     product_changelog_template = ""
     component_changelog_template = ""
 
-    def __init__(self, skipssl):
-        self.config = self.confManager.load_config()
+    def __init__(self, url, username, password, skipssl):
+
         self.skipssl = skipssl
         self.jira_service = JiraService(skipssl)
         self.bitbucket_service = BitbucketService(skipssl)
+        self.confluence = Confluence(
+            url=url,
+            username=username,
+            password=password,
+            verify_ssl=self.skipssl
+        )
 
-        if self.config is not None:
-            self.confluence = Confluence(
-                url=self.config["confluence-url"],
-                username=self.config["credentials"]["username"],
-                password=self.config["credentials"]["password"],
-                verify_ssl=self.skipssl
-            )
-
-            self.load_product_changelog_template()
-            self.load_component_changelog_template()
+        self.load_product_changelog_template()
+        self.load_component_changelog_template()
 
     def generate_releasenote(self, project_key, version, template_file):
         self.load_releasenote_template(template_file)
