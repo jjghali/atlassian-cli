@@ -1,4 +1,16 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 import re
+=======
+from _typeshed import NoneType
+>>>>>>> e781746... added dynamic version setting
+=======
+
+>>>>>>> 14cabeb... Update setup.py
+=======
+import re
+>>>>>>> 7680c96... changed setup.py
 import os
 from setuptools import setup, find_packages
 from os import path
@@ -25,13 +37,11 @@ if github_ref is not None:
     if m:
         version = m.group(1)
 else:
-    version = "0.0.0"
+    version = "dev"
 
 setup(
     name='atlcli',
     version=version,
-    long_description=long_description,
-    long_description_content_type='text/markdown',
     packages=find_packages(),
     py_modules=['cli', "commands"],
     include_package_data=True,
