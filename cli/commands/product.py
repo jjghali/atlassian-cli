@@ -1,18 +1,36 @@
 import click
 import pprint36 as pprint
 from cli.services import JiraService
+from cli.utils import ConfigurationManager
+
+skipssl = False
 
 
 @click.group()
-# @click.option('-n', '--product-name', default=False)
 @click.pass_context
 def product(ctx):
     """Get information about a product"""
+    confManager = ConfigurationManager()
+
+    conf = confManager.load_config()
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
+
     ctx.obj['skipssl'] = context_parent.obj["skipssl"]
 
-    self.jiraService = JiraService(ctx.obj['skipssl'])
+    if conf is None:
+        ctx.obj['bitbucket_url'] = context_parent.obj["bitbucket_url"]
+        ctx.obj['jira_url'] = context_parent.obj["jira_url"]
+        ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
+        ctx.obj['username'] = context_parent.obj["username"]
+        ctx.obj['password'] = context_parent.obj["password"]
+    else:
+        ctx.obj['bitbucket_url'] = conf["bitbucket_url"]
+        ctx.obj['jira_url'] = conf["jira_url"]
+        ctx.obj['confluence_url'] = conf["confluence_url"]
+        ctx.obj['username'] = conf["credentials"]["username"]
+        ctx.obj['password'] = conf["credentials"]["password"]
+
     pass
 
 
@@ -42,18 +60,21 @@ def versions(ctx):
 @product.command()
 @click.pass_context
 @click.option('-v', '--product-version', required=True, default=False)
+@click.option('-j', '--project-key', required=True, default=False)
 @click.option('--changes/--no-changes', required=False, default=False)
 @click.option('--confluence/--no-confluence', required=False, default=False)
-def tickets(ctx, product_version, changes, confluence):
+def tickets(ctx, product_version, project_key, changes, confluence):
     """Lists all components of a product"""
+    jiraService = JiraService(
+        ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
 
     product_version = product_version.strip()
-    versionInfo = jiraService.get_default_project_version_infos(
-        product_version)
+    versionInfo = jiraService.get_project_version_infos(project_key,
+                                                        product_version)
 
     if confluence:
-        confMarkup = jiraService.get_default_issues_confluence_markup(
-            versionInfo["id"])
+        confMarkup = jiraService.get_issues_confluence_markup(project_key,
+                                                              versionInfo["id"])
         print(confMarkup)
     else:
         output = "\nId: {0}\nName: {1}\nDescription: {2}\nReleased: {3}\nStart date: {4}\nRelease date: {5}\n"

@@ -2,25 +2,23 @@ import base64
 import requests
 import json
 from atlassian import Jira
-from cli.utils import ConfigurationManager
 import pprint36 as pprint
 import ssl
 from prettytable import PrettyTable
 
 
 class JiraService:
-    confManager = ConfigurationManager()
 
-    def __init__(self, skipssl):
-        self.config = self.confManager.load_config()
+    def __init__(self, jira_url, username, password, skipssl):
         self.skipssl = skipssl
-
-        if self.config is not None:
-            self.jiraInstance = Jira(
-                url=self.config["jira-url"],
-                username=self.config["credentials"]["username"],
-                password=self.config["credentials"]["password"],
-                verify_ssl=self.skipssl)
+        self.jira_url = jira_url
+        self.username = username,
+        self.password = password
+        self.jiraInstance = Jira(
+            url=jira_url,
+            username=username,
+            password=password,
+            verify_ssl=self.skipssl)
 
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
@@ -38,7 +36,7 @@ class JiraService:
 
     def get_repositories_from_issue(self, issue_id):
         endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
-            jira_url=self.config["jira-url"])
+            jira_url=self.jira_url)
 
         querystring = {
             "issueId": issue_id,
@@ -47,9 +45,15 @@ class JiraService:
         }
 
         payload = ""
+
+        encodedBytes = base64.b64encode("{username}:{password}"
+                                        .format(username=self.username,
+                                                password=self.password)
+                                        .encode("utf-8"))
+        base64_auth = str(encodedBytes, "utf-8")
         headers = {
             'Content-Type': "application/json",
-            'Authorization': "Basic {0}".format(self.config["credentials"]["base64"])
+            'Authorization': "Basic {0}".format(base64_auth)
         }
 
         response = requests.request(
@@ -81,21 +85,12 @@ class JiraService:
 
         return versionData
 
-    def get_default_project_version_infos(self, version):
-        return get_project_version_infos(self.config["project-key"], version)
-
-    def get_project_version_issues_default(self, versionId):
-        return get_project_version_issues(self.config["project-key"],  versionId)
-
     def get_project_version_issues(self, project_key, versionId):
         jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
             project_key, versionId)
 
         data = self.jiraInstance.jql(jql_query)["issues"]
         return data
-
-    def get_default_issues_confluence_markup(self, versionId):
-        get_issues_confluence_markup(self.config["project-key"], versionId)
 
     def get_issues_confluence_markup(self, project_key, versionId):
         issues = self.get_project_version_issues(project_key, versionId)
