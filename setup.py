@@ -1,4 +1,4 @@
-from _typeshed import NoneType
+
 import os
 from setuptools import setup, find_packages
 
@@ -14,12 +14,12 @@ deps = [
 
 version = ""
 
-if os.getenv('RELEASE_VERSION') is NoneType:
+if os.getenv('RELEASE_VERSION') is None:
     version = "dev"
 
 setup(
     name='atlcli',
-    version='0.1.0,
+    version=version
     packages=find_packages(),
     py_modules=['cli', "commands"],
     include_package_data=True,
