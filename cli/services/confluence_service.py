@@ -13,13 +13,23 @@ class ConfluenceService:
     product_changelog_template = ""
     component_changelog_template = ""
 
-    def __init__(self, url, username, password, skipssl):
+    def __init__(self, confluence_url, jira_url, bibucket_url, username, password, skipssl):
 
         self.skipssl = skipssl
-        self.jira_service = JiraService(skipssl)
-        self.bitbucket_service = BitbucketService(skipssl)
+        self.jira_service = JiraService(
+            url=jira_url,
+            username=username,
+            password=password,
+            skipssl=self.skipssl)
+
+        self.bitbucket_service = BitbucketService(
+            url=bibucket_url,
+            username=username,
+            password=password,
+            skipssl=self.skipssl)
+
         self.confluence = Confluence(
-            url=url,
+            url=confluence_url,
             username=username,
             password=password,
             verify_ssl=self.skipssl
@@ -28,7 +38,7 @@ class ConfluenceService:
         self.load_product_changelog_template()
         self.load_component_changelog_template()
 
-    def generate_releasenote(self, project_key, version, template_file):
+    def generate_releasenote(self, project_key, version, template_file):        
         self.load_releasenote_template(template_file)
 
         versionData = self.jira_service.get_project_version_infos(

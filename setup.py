@@ -25,7 +25,7 @@ if github_ref is not None:
     if m:
         version = m.group(1)
 else:
-    version = "dev"
+    version = "0.0.0"
 
 setup(
     name='atlcli',

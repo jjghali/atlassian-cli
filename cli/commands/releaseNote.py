@@ -11,6 +11,11 @@ def releaseNote(ctx):
     """Creates a release note one on Confluence"""
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
+    ctx.obj['bitbucket_url'] = context_parent.obj["bitbucket_url"]
+    ctx.obj['jira_url'] = context_parent.obj["jira_url"]
+    ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
+    ctx.obj['username'] = context_parent.obj["username"]
+    ctx.obj['password'] = context_parent.obj["password"]
     skipssl = context_parent.obj["skipssl"]
     pass
 
@@ -28,8 +33,10 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
     project_key = project_key.strip()
     space_key = space_key.strip()
     parent_page_id = parent_page_id.strip()
-
-    confluence_service = ConfluenceService(ctx.obj['skipssl'])
+    template_file = template_file.strip()
+    
+    confluence_service = ConfluenceService(
+        ctx.obj['confluence_url'], ctx.obj['jira_url'], ctx.obj['bitbucket_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
     releasenote = confluence_service.generate_releasenote(
         project_key, version, template_file)
 
