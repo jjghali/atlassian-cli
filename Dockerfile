@@ -1,5 +1,10 @@
 FROM python:3.9-alpine
 
 # Install python packages
-COPY requirements.txt /requirements.txt
+RUN mkdir /atlcli
+COPY cli/ /atlcli/cli
+COPY requirements.txt /atlcli/requirements.txt
+
+COPY setup.py /atlcli/setup.py
+
 RUN pip install .
