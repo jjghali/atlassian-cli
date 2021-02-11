@@ -4,25 +4,21 @@ import semantic_version
 import requests
 from atlassian import Bitbucket
 from atlassian import Jira
-from cli.utils import ConfigurationManager
 
 import pprint36 as pprint
 
 
 class BitbucketService:
 
-    # bitbucketInstance = None
-    confManager = ConfigurationManager()
-
-    def __init__(self, skipssl):
-        self.config = self.confManager.load_config()
+    def __init__(self, url, username, password, skipssl):
+        
         self.skipssl = skipssl
-
-        if self.config is not None:
-            self.bitbucketInstance = Bitbucket(
-                url=self.config["bitbucket-url"],
-                username=self.config["credentials"]["username"],
-                password=self.config["credentials"]["password"])
+        
+        self.bitbucketInstance = Bitbucket(
+            url=url,
+            username=username,
+            password=password,
+            verify_ssl=self.skipssl)
 
     def get_release(self, product_name, component_name, version):
 

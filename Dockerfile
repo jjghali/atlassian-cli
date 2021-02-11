@@ -1,9 +1,13 @@
 FROM python:3.9-alpine
 
 # Install python packages
-COPY requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+RUN mkdir /atlcli
 
-# Add current folder in /usr/src/app
-ADD . /usr/src/app/atlassian-cli
-RUN ls -ltra /usr/src/app/atlassian-cli/*
+COPY cli/ /atlcli/cli
+COPY requirements.txt /atlcli/requirements.txt
+COPY README.md /atlcli/README.md
+COPY setup.py /atlcli/setup.py
+
+WORKDIR /atlcli
+
+RUN pip install .
