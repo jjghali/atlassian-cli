@@ -6,5 +6,6 @@ COPY cli/ /atlcli/cli
 COPY requirements.txt /atlcli/requirements.txt
 
 COPY setup.py /atlcli/setup.py
+WORKDIR /atlcli
 
 RUN pip install .
