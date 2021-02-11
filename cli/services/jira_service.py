@@ -9,13 +9,13 @@ from prettytable import PrettyTable
 
 class JiraService:
 
-    def __init__(self, jira_url, username, password, skipssl):
+    def __init__(self, url, username, password, skipssl):
         self.skipssl = skipssl
-        self.jira_url = jira_url
-        self.username = username,
+        self.url = url        
+        self.username = username
         self.password = password
         self.jiraInstance = Jira(
-            url=jira_url,
+            url=url,
             username=username,
             password=password,
             verify_ssl=self.skipssl)
@@ -35,8 +35,8 @@ class JiraService:
         changes = self.get_changes(issue_id)
 
     def get_repositories_from_issue(self, issue_id):
-        endpoint_url = "{jira_url}/rest/dev-status/1.0/issue/detail".format(
-            jira_url=self.jira_url)
+        endpoint_url = "{url}/rest/dev-status/1.0/issue/detail".format(
+            url=self.url)
 
         querystring = {
             "issueId": issue_id,
