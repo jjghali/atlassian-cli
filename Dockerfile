@@ -10,4 +10,6 @@ COPY setup.py /atlcli/setup.py
 
 WORKDIR /atlcli
 
+WORKDIR /atlcli
+
 RUN pip install .
