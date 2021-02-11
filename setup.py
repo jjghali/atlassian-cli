@@ -13,10 +13,10 @@ deps = [
 ]
 
 version = ""
-
-if os.getenv('GITHUB_REF') is not None:
+github_ref = os.getenv('GITHUB_REF')
+if github_ref is not None:
     m = re.search(
-        "(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)", version)
+        "(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)", github_ref)
     if m:
         version = m.group(1)
 else:
