@@ -42,6 +42,8 @@ else:
 setup(
     name='atlcli',
     version=version,
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     py_modules=['cli', "commands"],
     include_package_data=True,
