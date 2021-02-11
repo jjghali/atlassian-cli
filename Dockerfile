@@ -12,4 +12,6 @@ WORKDIR /atlcli
 
 WORKDIR /atlcli
 
+WORKDIR /atlcli
+
 RUN pip install .
