@@ -1,6 +1,11 @@
 import re
 import os
 from setuptools import setup, find_packages
+from os import path
+
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 deps = [
     'click',
@@ -25,6 +30,8 @@ else:
 setup(
     name='atlcli',
     version=version,
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     py_modules=['cli', "commands"],
     include_package_data=True,
