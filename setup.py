@@ -1,4 +1,4 @@
-
+import re
 import os
 from setuptools import setup, find_packages
 
@@ -14,7 +14,12 @@ deps = [
 
 version = ""
 
-if os.getenv('GITHUB_REF') is None:
+if os.getenv('GITHUB_REF') is not None:
+    m = re.search(
+        "(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)", version)
+    if m:
+        version = m.group(1)
+else:
     version = "dev"
 
 setup(
