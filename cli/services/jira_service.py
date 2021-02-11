@@ -45,7 +45,11 @@ class JiraService:
         issue_id = issue_details["id"]
         changes = self.get_changes(issue_id)
 
+<<<<<<< HEAD
     def get_commits_from_issue(self, issue_id):
+=======
+    def get_repositories_from_issue(self, issue_id):
+>>>>>>> f8d7d52... changed dockerfile. Fixed issues with params
         endpoint_url = "{url}/rest/dev-status/1.0/issue/detail".format(
             url=self.url)
 

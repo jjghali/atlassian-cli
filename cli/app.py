@@ -23,11 +23,11 @@ from commands import stats
 def cli(ctx, skipssl, bitbucket_url, jira_url, confluence_url, username, password):
     ctx.ensure_object(dict)
     ctx.obj['skipssl'] = not skipssl
-    ctx.obj['bitbucket_url'] = bitbucket_url
-    ctx.obj['jira_url'] = jira_url
-    ctx.obj['confluence_url'] = confluence_url
-    ctx.obj['username'] = username
-    ctx.obj['password'] = password
+    ctx.obj['bitbucket_url'] = bitbucket_url.strip()
+    ctx.obj['jira_url'] = jira_url.strip()
+    ctx.obj['confluence_url'] = confluence_url.strip()
+    ctx.obj['username'] = username.strip()
+    ctx.obj['password'] = password.strip()
     pass
 
 @cli.command()
