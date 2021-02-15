@@ -1,3 +1,4 @@
+import os, sys
 import click
 import json
 from cli.services import ConfluenceService
@@ -48,7 +49,9 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
 
             else:
                 print("ERROR: Missing space-key or parent-page-id options.")
+                sys.exit(os.EX_SOFTWARE)
         else:
             print("This was a dry-run test")
     else:
         print("ERROR: Provided version not found. Please check if it exists on Jira.")
+        sys.exit(os.EX_SOFTWARE)
