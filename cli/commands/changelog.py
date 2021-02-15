@@ -1,5 +1,6 @@
 import click
 import json
+import os, sys
 from cli.services import ConfluenceService
 from cli.services import BitbucketService
 from cli.utils import ConfigurationManager
@@ -70,6 +71,7 @@ def generate_product(ctx, version, space_key, product_name,
             print("This was a dry-run test")
     else:
         print("ERROR: Missing space-key or parent-page-id options.")
+        sys.exit(os.EX_SOFTWARE)
 
 
 @changelog.command()
@@ -98,3 +100,4 @@ def generate_component(ctx, version, space_key, component_name, parent_page_id, 
             print("This was a dry-run test")
     else:
         print("ERROR: Missing space-key or parent-page-id options.")
+        sys.exit(os.EX_SOFTWARE)

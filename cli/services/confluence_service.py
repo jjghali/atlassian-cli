@@ -1,4 +1,5 @@
 import re
+import sys,os
 import ssl
 import pprint36 as pprint
 from datetime import datetime
@@ -98,6 +99,7 @@ class ConfluenceService:
             print("")
         else:
             print("ERROR: An Issue occured while trying to generate the changelog")
+            sys.exit(os.EX_SOFTWARE)
 
         self.push_to_confluence(parent_page_id, page_title, changelog_content)
 
@@ -126,6 +128,7 @@ class ConfluenceService:
             print("Page \"{0}\" is pushed to confluence".format(title))
         except HTTPError:
             print("ERROR: You may not have the permission to edit or access this page.")
+            sys.exit(os.EX_SOFTWARE)
 
     def load_releasenote_template(self, file_path):
         try:
