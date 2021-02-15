@@ -44,15 +44,18 @@ class ConfluenceService:
         versionData = self.jira_service.get_project_version_infos(
             project_key, version)
 
-        tasks = self.jira_service.get_issues_confluence_markup(
-            project_key, versionData["id"])
+        if versionData is not None:
+            tasks = self.jira_service.get_issues_confluence_markup(
+                project_key, versionData["id"])
 
-        releasenote = self.releasenote_template.replace(
-            "%fixversion%", versionData["id"])
-        releasenote = releasenote.replace("%project-key%", project_key)
-        releasenote = releasenote.replace("%validate_task%", tasks)
+            releasenote = self.releasenote_template.replace(
+                "%fixversion%", versionData["id"])
+            releasenote = releasenote.replace("%project-key%", project_key)
+            releasenote = releasenote.replace("%validate_task%", tasks)
 
-        return releasenote
+            return releasenote
+        else:
+            return None
 
     def push_releasenote(self, spacekey, version, parent_page_id, releasenote):
         current_date = datetime.today().strftime("%Y-%m-%d")
@@ -115,11 +118,14 @@ class ConfluenceService:
     def push_to_confluence(self, parent_page_id, title, content):
         converted_content = self.confluence.convert_wiki_to_storage(
             content)["value"]
+        try:
 
-        self.confluence.update_or_create(
-            parent_page_id, title, converted_content, representation='storage')
+            self.confluence.update_or_create(
+                parent_page_id, title, converted_content, representation='storage')
 
-        print("Page \"{0}\" is pushed to confluence".format(title))
+            print("Page \"{0}\" is pushed to confluence".format(title))
+        except HTTPError:
+            print("ERROR: You may not have the permission to edit or access this page.")
 
     def load_releasenote_template(self, file_path):
         try:

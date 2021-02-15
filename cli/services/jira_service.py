@@ -69,21 +69,23 @@ class JiraService:
             filter(lambda x: x["name"] == version, data["values"]), None)
 
         # Validation
-
-        if "name" not in versionData:
-            versionData["name"] = ""
-        if "id" not in versionData:
-            versionData["id"] = ""
-        if "description" not in versionData:
-            versionData["description"] = ""
-        if "released" not in versionData:
-            versionData["released"] = ""
-        if "startDate" not in versionData:
-            versionData["startDate"] = ""
-        if "releaseDate" not in versionData:
-            versionData["releaseDate"] = ""
-
-        return versionData
+        if versionData is not None:
+            if "name" not in versionData:
+                versionData["name"] = ""
+            if "id" not in versionData:
+                versionData["id"] = ""
+            if "description" not in versionData:
+                versionData["description"] = ""
+            if "released" not in versionData:
+                versionData["released"] = ""
+            if "startDate" not in versionData:
+                versionData["startDate"] = ""
+            if "releaseDate" not in versionData:
+                versionData["releaseDate"] = ""
+            
+            return versionData
+        else:
+            return None
 
     def get_project_version_issues(self, project_key, versionId):
         jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
