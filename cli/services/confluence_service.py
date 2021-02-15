@@ -57,11 +57,7 @@ class ConfluenceService:
             releasenote = releasenote.replace("%project-key%", project_key)
             releasenote = releasenote.replace("%validate_task%", tasks)
 
-<<<<<<< HEAD
             return (releasenote,versionData["startDate"],versionData["releaseDate"])
-=======
-            return releasenote
->>>>>>> 95f2d1b... added better error and warning handling
         else:
             return None
 
@@ -123,22 +119,11 @@ class ConfluenceService:
         converted_content = self.confluence.convert_wiki_to_storage(
             content)["value"]
         try:
-<<<<<<< HEAD
             self.confluence.create_page(space_key, title, converted_content, parent_page_id, 'page', 'storage','v2')
             print("Page \"{0}\" is pushed to confluence".format(title))
         except HTTPError:
             print()
             sys.exit("ERROR: You may not have the permission to access this page or missing argument")
-=======
-
-            self.confluence.update_or_create(
-                parent_page_id, title, converted_content, representation='storage')
-
-            print("Page \"{0}\" is pushed to confluence".format(title))
-        except HTTPError:
-            print("ERROR: You may not have the permission to edit or access this page.")
->>>>>>> 95f2d1b... added better error and warning handling
-
     def load_releasenote_template(self, file_path):
         try:
             file = open(file_path,
