@@ -1,3 +1,4 @@
+import urllib3
 import click
 import os
 from sys import argv
@@ -8,6 +9,7 @@ from cli.commands import releaseNote
 from cli.commands import config
 from cli.commands import changelog
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 @click.group(help="Atlassian CLI")
 @click.option('--skipssl/--no-skipssl', required=False, default=False, help="Skips ssl validation in case you have certificates issues (not recommended)")

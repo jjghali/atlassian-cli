@@ -34,18 +34,21 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
     space_key = space_key.strip()
     parent_page_id = parent_page_id.strip()
     template_file = template_file.strip()
-    
+
     confluence_service = ConfluenceService(
         ctx.obj['confluence_url'], ctx.obj['jira_url'], ctx.obj['bitbucket_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
     releasenote = confluence_service.generate_releasenote(
         project_key, version, template_file)
 
-    if not dry_run:
-        if space_key is not None or parent_page_id is not None:
-            confluence_service.push_releasenote(
-                space_key, version, parent_page_id, releasenote)
+    if releasenote is not None:
+        if not dry_run:
+            if space_key is not None or parent_page_id is not None:
+                confluence_service.push_releasenote(
+                    space_key, version, parent_page_id, releasenote)
 
+            else:
+                print("ERROR: Missing space-key or parent-page-id options.")
         else:
-            print("ERROR: Missing space-key or parent-page-id options.")
+            print("This was a dry-run test")
     else:
-        print("This was a dry-run test")
+        print("ERROR: Provided version not found. Please check if it exists on Jira.")
