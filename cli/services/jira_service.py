@@ -104,6 +104,7 @@ class JiraService:
             if "releaseDate" not in versionData:
                 versionData["releaseDate"] = ""
             
+<<<<<<< HEAD
             story_points = self.get_total_story_points_per_version(project_key, versionData["id"])
             
             if story_points:
@@ -130,6 +131,11 @@ class JiraService:
 
         return published_releases
        
+=======
+            return versionData
+        else:
+            return None
+>>>>>>> 95f2d1b... added better error and warning handling
 
     def get_project_version_issues(self, project_key, versionId):
         jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
