@@ -3,7 +3,7 @@ import json
 import os, sys
 from cli.services import ConfluenceService
 from cli.services import BitbucketService
-from cli.utils import ConfigurationManager
+from cli.services import SonarQubeService
 
 skipssl = False
 
@@ -14,22 +14,13 @@ def changelog(ctx):
     """Creates a changelog page on Confluence"""
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
-    confManager = ConfigurationManager()
-
-    conf = confManager.load_config()
-
-    if conf is None:
-        ctx.obj['bitbucket_url'] = context_parent.obj["bitbucket_url"]
-        ctx.obj['jira_url'] = context_parent.obj["jira_url"]
-        ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
-        ctx.obj['username'] = context_parent.obj["username"]
-        ctx.obj['password'] = context_parent.obj["password"]
-    else:
-        ctx.obj['bitbucket_url'] = conf["bitbucket_url"]
-        ctx.obj['jira_url'] = conf["jira_url"]
-        ctx.obj['confluence_url'] = conf["confluence_url"]
-        ctx.obj['username'] = conf["credentials"]["username"]
-        ctx.obj['password'] = conf["credentials"]["password"]
+    
+    ctx.obj['bitbucket_url'] = context_parent.obj["bitbucket_url"]
+    ctx.obj['jira_url'] = context_parent.obj["jira_url"]
+    ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
+    ctx.obj['username'] = context_parent.obj["username"]
+    ctx.obj['password'] = context_parent.obj["password"]
+    
 
     skipssl = context_parent.obj["skipssl"]
     pass
@@ -58,7 +49,12 @@ def generate_product(ctx, version, space_key, product_name,
     template_file = template_file.strip()
 
     confluence_service = ConfluenceService(
-        ctx.obj['confluence_url'], ctx.obj['jira_url'], ctx.obj['bitbucket_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
+        ctx.obj['confluence_url'], 
+        ctx.obj['jira_url'], 
+        ctx.obj['bitbucket_url'], 
+        ctx.obj['username'], 
+        ctx.obj['password'], 
+        ctx.obj['skipssl'])
 
     if not configuration_repos:
         configuration_repos = "configuration"
@@ -80,18 +76,34 @@ def generate_product(ctx, version, space_key, product_name,
 @click.option('-n', '--component-name', required=True, default="", help="Component name")
 @click.option('-i', '--parent-page-id', required=True, default="", help="Id of the page under which you will create your changelogs")
 @click.option('-t', '--template-file', required=True, default="", help="Path to the template file for your changelog")
+@click.option('--sonar-project-key', required=False, default="", help="Project key on SonarQube.")
+@click.option('--sonar-api-key', required=False, default="", help="Project key on SonarQube.")
+@click.option('--sonar-url', required=False, default="", help="URL to SonarQube.")
 @click.option('--dry-run/--no-dry-run', required=False, default=False, help="Dry run for testing")
-def generate_component(ctx, version, space_key, component_name, parent_page_id, template_file, dry_run):
+def generate_component(ctx, version, space_key, component_name, parent_page_id, template_file, sonar_project_key, sonar_api_key, sonar_url, dry_run):
     """Creates the changelog for a product on confluence"""
     version = version.strip()
     space_key = space_key.strip()
     component_name = component_name.strip()
     parent_page_id = parent_page_id.strip()
     template_file = template_file.strip()
+    sonar_project_key = sonar_project_key.strip()
+    sonar_api_key = sonar_api_key.strip()
+    sonar_url = sonar_url.strip()
+    sonar_service = None
 
-    confluence_service = ConfluenceService(ctx.obj['skipssl'])
-
+    confluence_service = ConfluenceService(ctx.obj['confluence_url'], 
+    ctx.obj['jira_url'], 
+    ctx.obj['bitbucket_url'], 
+    ctx.obj['username'], 
+    ctx.obj['password'], 
+    ctx.obj['skipssl'])
+    
     if space_key is not None or parent_page_id is not None:
+        if sonar_api_key is not None and sonar_project_key is not None:
+            sonar_service = SonarQubeService(sonar_url, sonar_api_key, skipssl)       
+            sonar_measures = sonar_service.get_measures(sonar_project_key)
+            
         if not dry_run:
             confluence_service.push_changelog(component_name,
                                               space_key, version, parent_page_id, True)
