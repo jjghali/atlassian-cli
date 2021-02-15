@@ -1,9 +1,15 @@
 import click
 import json
 import os, sys
+<<<<<<< HEAD
 from services import ConfluenceService
 from services import BitbucketService
 from services import SonarQubeService
+=======
+from cli.services import ConfluenceService
+from cli.services import BitbucketService
+from cli.services import SonarQubeService
+>>>>>>> 50f2f11... added sonarqube support
 
 verifyssl = False
 
@@ -22,7 +28,11 @@ def changelog(ctx):
     ctx.obj['password'] = context_parent.obj["password"]
     
 
+<<<<<<< HEAD
     verifyssl = context_parent.obj["verifyssl"]
+=======
+    skipssl = context_parent.obj["skipssl"]
+>>>>>>> 50f2f11... added sonarqube support
     pass
 
 
@@ -54,7 +64,11 @@ def generate_product(ctx, version, space_key, product_name,
         ctx.obj['bitbucket_url'], 
         ctx.obj['username'], 
         ctx.obj['password'], 
+<<<<<<< HEAD
         ctx.obj['verifyssl'])
+=======
+        ctx.obj['skipssl'])
+>>>>>>> 50f2f11... added sonarqube support
 
     if not configuration_repos:
         configuration_repos = "configuration"
