@@ -114,8 +114,4 @@ def generate_component(ctx, version, space_key, component_name, parent_page_id, 
         else:
             print("This was a dry-run test")
     else:        
-<<<<<<< HEAD
         sys.exit("ERROR: Missing space-key or parent-page-id options.")
-=======
-        sys.exit("ERROR: Missing space-key or parent-page-id options.")
->>>>>>> 5d0b19f... fixed exit codes rejection
