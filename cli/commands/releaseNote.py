@@ -17,11 +17,7 @@ def releaseNote(ctx):
     ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
     ctx.obj['username'] = context_parent.obj["username"]
     ctx.obj['password'] = context_parent.obj["password"]
-<<<<<<< HEAD
     verifyssl = context_parent.obj["verifyssl"]
-=======
-    skipssl = context_parent.obj["skipssl"]
->>>>>>> 57c68d3... changed dockerfile. Fixed issues with params
     pass
 
 
