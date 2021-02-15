@@ -69,9 +69,8 @@ def generate_product(ctx, version, space_key, product_name,
                                               space_key, version, parent_page_id)
         else:
             print("This was a dry-run test")
-    else:
-        print("ERROR: Missing space-key or parent-page-id options.")
-        sys.exit(os.EX_SOFTWARE)
+    else:        
+        sys.exit("ERROR: Missing space-key or parent-page-id options.")
 
 
 @changelog.command()
@@ -98,6 +97,5 @@ def generate_component(ctx, version, space_key, component_name, parent_page_id, 
                                               space_key, version, parent_page_id, True)
         else:
             print("This was a dry-run test")
-    else:
-        print("ERROR: Missing space-key or parent-page-id options.")
-        sys.exit(os.EX_SOFTWARE)
+    else:        
+        sys.exit("ERROR: Missing space-key or parent-page-id options.")
