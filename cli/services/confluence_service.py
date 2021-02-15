@@ -97,9 +97,8 @@ class ConfluenceService:
 
         if changelog_content:
             print("")
-        else:
-            print("ERROR: An Issue occured while trying to generate the changelog")
-            sys.exit(os.EX_SOFTWARE)
+        else:            
+            sys.exit("ERROR: An Issue occured while trying to generate the changelog")
 
         self.push_to_confluence(parent_page_id, page_title, changelog_content)
 
@@ -127,8 +126,8 @@ class ConfluenceService:
 
             print("Page \"{0}\" is pushed to confluence".format(title))
         except HTTPError:
-            print("ERROR: You may not have the permission to edit or access this page.")
-            sys.exit(os.EX_SOFTWARE)
+            print()
+            sys.exit("ERROR: You may not have the permission to edit or access this page.")
 
     def load_releasenote_template(self, file_path):
         try:

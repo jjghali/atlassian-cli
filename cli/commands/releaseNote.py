@@ -47,11 +47,9 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
                 confluence_service.push_releasenote(
                     space_key, version, parent_page_id, releasenote)
 
-            else:
-                print("ERROR: Missing space-key or parent-page-id options.")
-                sys.exit(os.EX_SOFTWARE)
+            else:                
+                sys.exit("ERROR: Missing space-key or parent-page-id options.")
         else:
             print("This was a dry-run test")
-    else:
-        print("ERROR: Provided version not found. Please check if it exists on Jira.")
-        sys.exit(os.EX_SOFTWARE)
+    else:        
+        sys.exit("ERROR: Provided version not found. Please check if it exists on Jira.")
