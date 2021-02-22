@@ -1,6 +1,7 @@
 # Altassian CLI
 ## Introduction
 Altassian CLI is a Atlassian product CLI that allows you to create release notes, get infos about the repositories and repositories.
+
 ## Requirements
 * Python 3.+
 * Virtualenv
@@ -41,6 +42,8 @@ pip install . # While in root of project
             atlcli --help
 
 ```
+## Usage
+A guide for the tool can be found on the [Usage](./doc/Usage.md) page.
 
 ## Usage
 A guide for the tool can be found on the [Usage](./doc/Usage.md) page.
