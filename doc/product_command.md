@@ -7,17 +7,27 @@ $ atlcli [COMMON_ARGS] product [SUBCOMMAND] [OPTION]...
 ```
 ## Sub commands
 
+<<<<<<< HEAD
 | Name       | Description                                  |
 |------------|----------------------------------------------|
 | `info`     | Displays info about a product                |
 | `list`     | Lists all the deployed versions of a product |
 | `tickets`  | Lists all components of a product            |
 | `versions` | Lists all the deployed versions of a product |
+=======
+|Name|Description|
+|-|-|
+|`info`|Displays info about a product|
+|`list`|Lists all the deployed versions of a product|
+|`tickets`|Lists all components of a product|
+|`versions`|Lists all the deployed versions of a product|
+>>>>>>> 4a0ce72... added docs
 
 ## Options and arguments
 ### info
 `NYI`
 
+<<<<<<< HEAD
 ### **list**
 `NYI`
 
@@ -44,6 +54,18 @@ Displays statistics about a product and push data to a PowerBI Realtime dataset 
 | `--all-releases/--no-all-releases` | Optional  | Produces stats for all the releases created in a product. (Run it only once)|
 | `--csv/--no-csv`                   | Optional  | Produces a csv file.                                                        |
 | `-s', '--since`                    | Optional  | Specify start date for stats.                                               |
+=======
+### list
+`NYI`
+
+### tickets
+|Name|Mandatory|Description|
+|-|-|-|
+|`-v, --product-version`|Required||
+|`-j, --project-key`|Required||
+|`--changes / --no-changes`|Optional||
+|`--confluence / --no-confluence`|Optional||
+>>>>>>> 4a0ce72... added docs
 
 ### versions
 `NYI`
@@ -61,6 +83,7 @@ NYI
 ```bash
 NYI
 ```
+<<<<<<< HEAD
 ### stats
 #### **To PowerBI with all releases**
 ```bash
@@ -107,3 +130,9 @@ NYI
     --since=2020/09/01 \
     --csv
 ```
+=======
+### versions
+```bash
+NYI
+```
+>>>>>>> 4a0ce72... added docs
