@@ -1,8 +1,6 @@
 import click
 import pprint36 as pprint
 from cli.services import JiraService
-from cli.utils import ConfigurationManager
-
 skipssl = False
 
 
@@ -10,38 +8,18 @@ skipssl = False
 @click.pass_context
 def product(ctx):
     """Get information about a product"""
-    confManager = ConfigurationManager()
-
-    conf = confManager.load_config()
     context_parent = click.get_current_context(silent=True)
-    ctx.ensure_object(dict)
-
-    ctx.obj['skipssl'] = context_parent.obj["skipssl"]
-
-    if conf is None:
-        ctx.obj['bitbucket_url'] = context_parent.obj["bitbucket_url"]
-        ctx.obj['jira_url'] = context_parent.obj["jira_url"]
-        ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
-        ctx.obj['username'] = context_parent.obj["username"]
-        ctx.obj['password'] = context_parent.obj["password"]
-    else:
-        ctx.obj['bitbucket_url'] = conf["bitbucket_url"]
-        ctx.obj['jira_url'] = conf["jira_url"]
-        ctx.obj['confluence_url'] = conf["confluence_url"]
-        ctx.obj['username'] = conf["credentials"]["username"]
-        ctx.obj['password'] = conf["credentials"]["password"]
-
+    ctx.ensure_object(dict)    
+    ctx.obj['jira_url'] = context_parent.obj["jira_url"]    
+    ctx.obj['username'] = context_parent.obj["username"]
+    ctx.obj['password'] = context_parent.obj["password"]
+    skipssl = context_parent.obj["skipssl"]
     pass
-
-
-@product.command()
-def list():
-    """Lists all the deployed versions of a product"""
-    print("lists products")
-
 
 @product.command()
 @click.pass_context
+@click.option('-v', '--product-version', required=True, default=False)
+@click.option('-j', '--project-key', required=True, default=False)
 def info():
     """Provides info about a product release"""
     pass
@@ -65,15 +43,15 @@ def versions(ctx):
 @click.option('--confluence/--no-confluence', required=False, default=False)
 def tickets(ctx, product_version, project_key, changes, confluence):
     """Lists all components of a product"""
-    jiraService = JiraService(
+    jira_service = JiraService(
         ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
 
     product_version = product_version.strip()
-    versionInfo = jiraService.get_project_version_infos(project_key,
+    versionInfo = jira_service.get_project_version_infos(project_key,
                                                         product_version)
 
     if confluence:
-        confMarkup = jiraService.get_issues_confluence_markup(project_key,
+        confMarkup = jira_service.get_issues_confluence_markup(project_key,
                                                               versionInfo["id"])
         print(confMarkup)
     else:
@@ -90,7 +68,7 @@ def tickets(ctx, product_version, project_key, changes, confluence):
                 versionInfo["releaseDate"]))
 
         if changes:
-            output = jiraService.get_issues_printable(versionInfo["id"])
+            output = jira_service.get_issues_printable(versionInfo["id"])
             print(output)
 
 
@@ -100,3 +78,16 @@ def info(ctx):
     """Displays info about a product"""
 
     print("product info here")
+
+@product.command()
+@click.option('-v', '--version', required=False, default="", help="Specify version if you want statistics about a version.")
+@click.option('-j', '--project-key', required=True, default="", help="Project key used in your Jira project.")
+@click.option('--json/--no-json', required=False, default=False, help="Provides stats in json format.")
+@click.pass_context
+def stats(ctx, version, project_key, json):
+    """Displays statistics about a product"""
+    jira_service = JiraService(
+            ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
+    result = jira_service.get_meantime_between_releases(project_key)
+    print(result)
+

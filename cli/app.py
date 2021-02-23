@@ -13,12 +13,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 @click.group(help="Atlassian CLI")
 @click.option('--skipssl/--no-skipssl', required=False, default=False, help="Skips ssl validation in case you have certificates issues (not recommended)")
-@click.option('--bitbucket-url', required=True, default="", help="Bitbucket URL")
-@click.option('--jira-url', required=True, default="", help="Jira URL")
-@click.option('--confluence-url', required=True, default="", help="Confluence URL")
+@click.option('--bitbucket-url', required=False, default="", help="Bitbucket URL")
+@click.option('--jira-url', required=False, default="", help="Jira URL")
+@click.option('--confluence-url', required=False, default="", help="Confluence URL")
 @click.option('--username', required=True, default="", help="Username to use for accessing Atlassian products")
 @click.option('--password', required=True, default="", help="Password to use for accessing Atlassian products")
 @click.pass_context
+# TODO: add url validation under commands when they are needed
 def cli(ctx, skipssl, bitbucket_url, jira_url, confluence_url, username, password):
     ctx.ensure_object(dict)
     ctx.obj['skipssl'] = not skipssl
