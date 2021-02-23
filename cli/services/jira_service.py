@@ -33,6 +33,8 @@ class JiraService:
 
         self.stats_service = StatsService()
 
+        self.stats_service = StatsService()
+
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
         pass
