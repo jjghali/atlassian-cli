@@ -5,7 +5,7 @@ from atlassian import Jira
 import pprint36 as pprint
 import ssl
 from prettytable import PrettyTable
-
+from .stats_service import StatsService
 
 class JiraService:
 
@@ -19,6 +19,8 @@ class JiraService:
             username=username,
             password=password,
             verify_ssl=self.skipssl)
+
+        self.stats_service = StatsService()
 
     def get_ticket(self, ticket_name):
         """get tickets basic infos"""
@@ -135,3 +137,15 @@ class JiraService:
 
         output = "----------Issues----------\n{0}".format(table)
         return output
+
+    def get_meantime_between_releases(self, project_key):
+        releases = self.jiraInstance.get_project_versions(project_key)
+        published_releases = list(filter(lambda x: x["released"] , releases))
+        average_meantime_between_releases = self.stats_service.calculate_avgtime_between_releases(published_releases)
+
+        number_of_releases = len(releases)
+        result = "Number of releases published: {0}\nAverage days between: {1}".format(number_of_releases,
+                average_meantime_between_releases)
+        
+        return result
+        
