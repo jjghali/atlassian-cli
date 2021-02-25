@@ -65,13 +65,7 @@ class ConfluenceService:
         if release_date is None:
             release_date = start_date
 
-        m = re.search(
-            "(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)", version)
-
-        if m:
-            semantic_version = m.group(1)
-
-        title = "{0} - {1}".format(semantic_version, release_date)
+        title = "{0} - {1}".format(version, release_date)
 
         self.push_to_confluence(spacekey, parent_page_id, title, releasenote)
 
