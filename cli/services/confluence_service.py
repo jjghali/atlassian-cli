@@ -67,18 +67,8 @@ class ConfluenceService:
 
         title = "{0} - {1}".format(version, release_date)
 
-<<<<<<< HEAD
         self.push_to_confluence(spacekey, parent_page_id, title, releasenote)
 
-=======
-        if m:
-            semantic_version = m.group(1)
-
-        title = "{0} - {1}".format(semantic_version, release_date)
-
-        self.push_to_confluence(spacekey, parent_page_id, title, releasenote)
-
->>>>>>> 5dd7e89... - le titre de la release note aura maintenant la date de debut
         semantic_version = ""
 
     def push_changelog(self, name, space_key, version, parent_page_id, isComponent=False):
