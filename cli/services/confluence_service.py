@@ -42,6 +42,9 @@ class ConfluenceService:
     def generate_releasenote(self, project_key, version, template_file):        
         self.load_releasenote_template(template_file)
 
+        if self.releasenote_template is None:
+            sys.exit("ERROR: Release note template is missing")
+
         versionData = self.jira_service.get_project_version_infos(
             project_key, version)
 
@@ -54,13 +57,13 @@ class ConfluenceService:
             releasenote = releasenote.replace("%project-key%", project_key)
             releasenote = releasenote.replace("%validate_task%", tasks)
 
-            return releasenote
+            return (releasenote,versionData["startDate"],versionData["releaseDate"])
         else:
             return None
 
-    def push_releasenote(self, spacekey, version, parent_page_id, releasenote):
-        current_date = datetime.today().strftime("%Y-%m-%d")
-        semantic_version = ""
+    def push_releasenote(self, spacekey, version, start_date, release_date, parent_page_id, releasenote):
+        if release_date is None:
+            release_date = start_date
 
         m = re.search(
             "(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)", version)
@@ -68,9 +71,11 @@ class ConfluenceService:
         if m:
             semantic_version = m.group(1)
 
-        title = "{0} - {1}".format(semantic_version, current_date)
+        title = "{0} - {1}".format(semantic_version, release_date)
 
-        self.push_to_confluence(parent_page_id, title, releasenote)
+        self.push_to_confluence(spacekey, parent_page_id, title, releasenote)
+
+        semantic_version = ""
 
     def push_changelog(self, name, space_key, version, parent_page_id, isComponent=False):
         changelog_content = None
@@ -100,7 +105,7 @@ class ConfluenceService:
         else:            
             sys.exit("ERROR: An Issue occured while trying to generate the changelog")
 
-        self.push_to_confluence(parent_page_id, page_title, changelog_content)
+        self.push_to_confluence(space_key,parent_page_id, page_title, changelog_content)
 
     def generate_component_changelog(self, component_name, product_name, version):
         release = self.bitbucket_service.get_release(
@@ -116,18 +121,15 @@ class ConfluenceService:
         changelog_content = ""
         return changelog_content
 
-    def push_to_confluence(self, parent_page_id, title, content):
+    def push_to_confluence(self, space_key, parent_page_id, title, content):
         converted_content = self.confluence.convert_wiki_to_storage(
             content)["value"]
         try:
-
-            self.confluence.update_or_create(
-                parent_page_id, title, converted_content, representation='storage')
-
+            self.confluence.create_page(space_key, title, converted_content, parent_page_id, 'page', 'storage','v2')
             print("Page \"{0}\" is pushed to confluence".format(title))
         except HTTPError:
             print()
-            sys.exit("ERROR: You may not have the permission to edit or access this page.")
+            sys.exit("ERROR: You may not have the permission to access this page or missing argument")
 
     def load_releasenote_template(self, file_path):
         try:
