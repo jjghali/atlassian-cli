@@ -52,7 +52,7 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
                     space_key, version, start_date, release_date,parent_page_id, releasenote)
 
             else:                
-                sys.exit("ERROR: Missing space-key or parent-page-id options.")
+                sys.exit("ERROR: Page already exist or missing argument.")
         else:
             print("This was a dry-run test")
     else:        
