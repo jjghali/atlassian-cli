@@ -3,11 +3,12 @@ import click
 import os
 from sys import argv
 
-from cli.commands import product
-from cli.commands import component
-from cli.commands import releaseNote
-from cli.commands import config
-from cli.commands import changelog
+from commands import product
+from commands import component
+from commands import releaseNote
+from commands import config
+from commands import changelog
+from commands import stats
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -42,6 +43,7 @@ cli.add_command(config)
 cli.add_command(releaseNote)
 cli.add_command(product)
 cli.add_command(component)
+cli.add_command(stats)
 
 if __name__ == '__main__':
     cli()

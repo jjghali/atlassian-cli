@@ -3,3 +3,4 @@ from .config import *
 from .product import *
 from .releaseNote import *
 from .changelog import *
+from .stats import *
