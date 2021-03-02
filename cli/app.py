@@ -5,16 +5,12 @@ from sys import argv
 
 from utils import ConfigurationManager
 
-<<<<<<< HEAD
 from commands import product
 from commands import component
 from commands import releaseNote
 from commands import config
 from commands import changelog
 from commands import stats
-=======
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
->>>>>>> 95f2d1b... added better error and warning handling
 
 @click.group(help="Atlassian CLI")
 @click.option('--skipssl/--no-skipssl', required=False, default=False, help="Skips ssl validation in case you have certificates issues (not recommended)")
