@@ -1,10 +1,15 @@
 import os, sys
 import click
 import pprint36 as pprint
+<<<<<<< HEAD
 from services import JiraService, PowerBIService
 from utils import CsvUtil
 
 verifyssl = False
+=======
+from services import JiraService
+skipssl = False
+>>>>>>> d2c6d61... added lead time for changes
 
 
 @click.group()
@@ -85,15 +90,20 @@ def info(ctx):
 @click.option('-v', '--version', required=False, default="", help="Specify version if you want statistics about a version.")
 @click.option('-j', '--project-key', required=True, default="", help="Project key used in your Jira project.")
 @click.option('--json/--no-json', required=False, default=False, help="Provides stats in json format.")
+<<<<<<< HEAD
 @click.option('-p', '--powerbi-url', required=False, default="", help="Push data to a PowerBI Real Time Dataset if provided.")
 @click.option('--all-releases/--no-all-releases', required=False, default=False, help="Produces stats for all the releases created in a product. (Run it only once)")
 @click.option('--csv/--no-csv', required=False, default=False, help="Produces a csv file.")
 @click.option('-s', '--since', required=False, default="", help="Specify start date for stats")
 def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since):
+=======
+def stats(ctx, version, project_key, json):
+>>>>>>> d2c6d61... added lead time for changes
     """Displays statistics about a product"""
     powerbi_service = None
     powerbi_url = powerbi_url.strip()
     jira_service = JiraService(
+<<<<<<< HEAD
             ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['verifyssl'])
     result = jira_service.get_deploy_frequency(project_key, since)
     
@@ -129,3 +139,15 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
         storypoints_all = jira_service.get_total_story_points_all(project_key,since)
         
         powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq_per_release, storypoints_all,commits_delta)
+=======
+            ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
+    result = jira_service.get_deploy_frequency(project_key)
+    print(result)
+    
+    if version is not None:
+        leadtime = jira_service.get_leadtime_for_changes_per_version(project_key,version)
+        s_lead_time = "Version: {0}\nLead time for changes: {1}".format(version, leadtime)
+        print(s_lead_time)
+    
+
+>>>>>>> d2c6d61... added lead time for changes

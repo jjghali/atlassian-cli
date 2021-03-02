@@ -72,11 +72,17 @@ class JiraService:
         }
 
         response = requests.request(
+<<<<<<< HEAD
             "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.verifyssl)
         if response.ok:
             return json.loads(response.text)
         else:
             return None
+=======
+            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.skipssl)
+        result = json.loads(response.text)
+        return result
+>>>>>>> d2c6d61... added lead time for changes
 
     def get_repositories_from_issue(self, issue_id):
         commits = self.get_commits_from_issue(issue_id)
@@ -185,6 +191,7 @@ class JiraService:
         output = "----------Issues----------\n{0}".format(table)
         return output
 
+<<<<<<< HEAD
     def get_deploy_frequency(self, project_key, since=None):
         
         releases = self.jiraInstance.get_project_versions(project_key)
@@ -206,6 +213,16 @@ class JiraService:
         result["number_of_releases"] = number_of_releases
         result["deploy_freq"] = average_meantime_between_releases
         result["deploy_freq_date"] = date.today()
+=======
+    def get_deploy_frequency(self, project_key):
+        releases = self.jiraInstance.get_project_versions(project_key)
+        published_releases = list(filter(lambda x: x["released"] , releases))
+        average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
+
+        number_of_releases = len(releases)
+        result = "Number of releases published: {0}\nAverage days between releases: {1}".format(number_of_releases,
+                average_meantime_between_releases)
+>>>>>>> d2c6d61... added lead time for changes
         
         if bool(since):
             result["deploy_freq_per_release"] = deploy_freq_per_release
@@ -221,6 +238,7 @@ class JiraService:
         leadtime = self.stats_service.calculate_lead_time_for_changes(version_info, issues, latest_commits)
         return leadtime
 
+<<<<<<< HEAD
     def get_leadtime_for_changes_for_all(self, project_key, since=None):
         leadtimes = dict()
         releases = self.get_project_published_versions(project_key, since)
@@ -240,11 +258,16 @@ class JiraService:
     def get_lastest_commits_for_issues(self, issues):
         latest_commits = dict()
         not_added_due_to_error = ""
+=======
+    def get_lastest_commits_for_issues(self, issues):
+        latest_commits = dict()
+>>>>>>> d2c6d61... added lead time for changes
 
         for index, t in enumerate(issues):
             issue_key = t["key"]
             issue_id = t["id"]
             last_commit =  self.get_last_commit(issue_id)
+<<<<<<< HEAD
             
             if last_commit:
                 latest_commits[issue_key] = last_commit
@@ -364,3 +387,16 @@ class JiraService:
             else:
                 story_points_releases[r["name"]] = 0
         return story_points_releases
+=======
+            if last_commit:
+                latest_commits[issue_key] = last_commit
+
+        return latest_commits
+    
+    def get_last_commit(self, issue_id):
+        result = self.get_commits_from_issue(issue_id)
+        if len(result["detail"][0]["repositories"]) != 0:
+            return result["detail"][0]["repositories"][0]["commits"][0]
+        
+        return None
+>>>>>>> d2c6d61... added lead time for changes
