@@ -1,7 +1,7 @@
 import os, sys
 import click
 import json
-from cli.services import ConfluenceService
+from services import ConfluenceService
 
 skipssl = False
 

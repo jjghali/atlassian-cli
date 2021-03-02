@@ -36,7 +36,7 @@ class JiraService:
         issue_id = issue_details["id"]
         changes = self.get_changes(issue_id)
 
-    def get_repositories_from_issue(self, issue_id):
+    def get_commits_from_issue(self, issue_id):
         endpoint_url = "{url}/rest/dev-status/1.0/issue/detail".format(
             url=self.url)
 
@@ -61,7 +61,11 @@ class JiraService:
         response = requests.request(
             "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.skipssl)
         result = json.loads(response.text)
-        repositories = result["detail"][0]["repositories"]
+        return result
+
+    def get_repositories_from_issue(self, issue_id):
+        commits = self.get_commits_from_issue(issue_id)
+        repositories = commits["detail"][0]["repositories"]
         return repositories
 
     def get_project_version_infos(self, project_key, version):
@@ -119,8 +123,8 @@ class JiraService:
         return content
 
     # Creates the issues refered to a jira product
-    def get_issues_printable(self, versionId):
-        issues = self.get_project_version_issues(versionId)
+    def get_issues_printable(self, project_key, versionId):
+        issues = self.get_project_version_issues(project_key, versionId)
         table = PrettyTable()
         table.field_names = ["Key", "Repositories", "Status"]
 
@@ -138,14 +142,41 @@ class JiraService:
         output = "----------Issues----------\n{0}".format(table)
         return output
 
-    def get_meantime_between_releases(self, project_key):
+    def get_deploy_frequency(self, project_key):
         releases = self.jiraInstance.get_project_versions(project_key)
         published_releases = list(filter(lambda x: x["released"] , releases))
-        average_meantime_between_releases = self.stats_service.calculate_avgtime_between_releases(published_releases)
+        average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
 
         number_of_releases = len(releases)
-        result = "Number of releases published: {0}\nAverage days between: {1}".format(number_of_releases,
+        result = "Number of releases published: {0}\nAverage days between releases: {1}".format(number_of_releases,
                 average_meantime_between_releases)
         
         return result
+    
+    def get_leadtime_for_changes_per_version(self, project_key, product_version):
+        version_info = self.get_project_version_infos(project_key,
+                                                        product_version)
+        issues = self.get_project_version_issues(project_key, version_info["id"])
+        latest_commits = self.get_lastest_commits_for_issues(issues)
+
+        leadtime = self.stats_service.calculate_lead_time_for_changes(version_info, issues, latest_commits)
+        return leadtime
+
+    def get_lastest_commits_for_issues(self, issues):
+        latest_commits = dict()
+
+        for index, t in enumerate(issues):
+            issue_key = t["key"]
+            issue_id = t["id"]
+            last_commit =  self.get_last_commit(issue_id)
+            if last_commit:
+                latest_commits[issue_key] = last_commit
+
+        return latest_commits
+    
+    def get_last_commit(self, issue_id):
+        result = self.get_commits_from_issue(issue_id)
+        if len(result["detail"][0]["repositories"]) != 0:
+            return result["detail"][0]["repositories"][0]["commits"][0]
         
+        return None
