@@ -72,17 +72,11 @@ class JiraService:
         }
 
         response = requests.request(
-<<<<<<< HEAD
             "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.verifyssl)
         if response.ok:
             return json.loads(response.text)
         else:
             return None
-=======
-            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.skipssl)
-        result = json.loads(response.text)
-        return result
->>>>>>> d2c6d61... added lead time for changes
 
     def get_repositories_from_issue(self, issue_id):
         commits = self.get_commits_from_issue(issue_id)
@@ -220,12 +214,19 @@ class JiraService:
         average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
 
         number_of_releases = len(releases)
+<<<<<<< HEAD
         result = "Number of releases published: {0}\nAverage days between releases: {1}".format(number_of_releases,
                 average_meantime_between_releases)
 >>>>>>> d2c6d61... added lead time for changes
         
         if bool(since):
             result["deploy_freq_per_release"] = deploy_freq_per_release
+=======
+        result = dict()
+        result["number_of_releases"] = number_of_releases
+        result["deploy_freq"] = average_meantime_between_releases
+        result["deploy_freq_date"] = date.today()
+>>>>>>> 0aae2cc... added lead time for all release since a date
                 
         return result
     
@@ -239,10 +240,22 @@ class JiraService:
         return leadtime
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     def get_leadtime_for_changes_for_all(self, project_key, since=None):
         leadtimes = dict()
         releases = self.get_project_published_versions(project_key, since)
         
+=======
+    def get_leadtime_for_changes_for_all(self, project_key, since=None):
+        leadtimes = dict()
+        releases = self.get_project_published_versions(project_key)
+        since = date_parser.parse(since)        
+        semantic_version = ""
+
+        if since is not None:
+            releases = list(filter(lambda x: date_parser.parse(x["releaseDate"]) >= since , releases))
+
+>>>>>>> 0aae2cc... added lead time for all release since a date
         for r in releases:
             l = self.get_leadtime_for_changes_per_version(project_key, r["name"])
             item = dict()
@@ -253,12 +266,16 @@ class JiraService:
             leadtimes[r["name"]] = item
             
         return leadtimes
+<<<<<<< HEAD
         
 
     def get_lastest_commits_for_issues(self, issues):
         latest_commits = dict()
         not_added_due_to_error = ""
 =======
+=======
+    
+>>>>>>> 0aae2cc... added lead time for all release since a date
     def get_lastest_commits_for_issues(self, issues):
         latest_commits = dict()
 >>>>>>> d2c6d61... added lead time for changes
@@ -399,4 +416,7 @@ class JiraService:
             return result["detail"][0]["repositories"][0]["commits"][0]
         
         return None
+<<<<<<< HEAD
 >>>>>>> d2c6d61... added lead time for changes
+=======
+>>>>>>> 0aae2cc... added lead time for all release since a date
