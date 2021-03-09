@@ -155,9 +155,17 @@ class JiraService:
         output = "----------Issues----------\n{0}".format(table)
         return output
 
-    def get_deploy_frequency(self, project_key):
+    def get_deploy_frequency(self, project_key, since=None):
+        
         releases = self.jiraInstance.get_project_versions(project_key)
-        published_releases = list(filter(lambda x: x["released"] , releases))
+        
+        if bool(since):
+            since = date_parser.parse(since)
+            published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) and date_parser.parse(x["releaseDate"]) >= since , releases))
+        
+        else:
+            published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) , releases))
+        
         average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
 
         number_of_releases = len(releases)
