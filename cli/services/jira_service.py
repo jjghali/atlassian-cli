@@ -1,15 +1,22 @@
+import re
 import base64
-import requests
 import json
-from atlassian import Jira
-import pprint36 as pprint
 import ssl
+from datetime import date
+from dateutil import parser as date_parser
+
+import pprint36 as pprint
+import requests
+from atlassian import Jira
 from prettytable import PrettyTable
+
 from .stats_service import StatsService
+
 
 class JiraService:
 
     def __init__(self, url, username, password, skipssl):
+        self.semver_regex = r"(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)"
         self.skipssl = skipssl
         self.url = url        
         self.username = username
@@ -70,7 +77,7 @@ class JiraService:
 
     def get_project_version_infos(self, project_key, version):
         data = self.jiraInstance.get_project_versions_paginated(
-            project_key, limit=50)
+            project_key, limit=1000)
         versionData = next(
             filter(lambda x: x["name"] == version, data["values"]), None)
 
@@ -92,6 +99,12 @@ class JiraService:
             return versionData
         else:
             return None
+
+    def get_project_published_versions(self, project_key):
+        releases = self.jiraInstance.get_project_versions_paginated(project_key, limit=1000)
+        published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) , releases["values"]))
+        return published_releases
+       
 
     def get_project_version_issues(self, project_key, versionId):
         jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
@@ -148,9 +161,11 @@ class JiraService:
         average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
 
         number_of_releases = len(releases)
-        result = "Number of releases published: {0}\nAverage days between releases: {1}".format(number_of_releases,
-                average_meantime_between_releases)
-        
+        result = dict()
+        result["number_of_releases"] = number_of_releases
+        result["deploy_freq"] = average_meantime_between_releases
+        result["deploy_freq_date"] = date.today()
+                
         return result
     
     def get_leadtime_for_changes_per_version(self, project_key, product_version):
@@ -162,6 +177,26 @@ class JiraService:
         leadtime = self.stats_service.calculate_lead_time_for_changes(version_info, issues, latest_commits)
         return leadtime
 
+    def get_leadtime_for_changes_for_all(self, project_key, since=None):
+        leadtimes = dict()
+        releases = self.get_project_published_versions(project_key)
+        since = date_parser.parse(since)        
+        semantic_version = ""
+
+        if since is not None:
+            releases = list(filter(lambda x: date_parser.parse(x["releaseDate"]) >= since , releases))
+
+        for r in releases:
+            l = self.get_leadtime_for_changes_per_version(project_key, r["name"])
+            item = dict()
+            if l >=0:
+                item["lead-time"] = l
+
+            item["release-date"] = r["releaseDate"]
+            leadtimes[r["name"]] = item
+            
+        return leadtimes
+    
     def get_lastest_commits_for_issues(self, issues):
         latest_commits = dict()
 
