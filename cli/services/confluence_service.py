@@ -6,7 +6,7 @@ from datetime import datetime
 from atlassian import Confluence
 from .jira_service import JiraService
 from .bitbucket_service import BitbucketService
-
+from requests import HTTPError
 
 class ConfluenceService:
 

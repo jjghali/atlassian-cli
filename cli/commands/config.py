@@ -1,51 +1,38 @@
 
 import click
+import os
 from utils import ConfigurationManager
 
 confManager = ConfigurationManager()
 
 
 @click.command()
-def config():
+@click.option('--skipssl/--no-skipssl', prompt=True, required=True, default=False, help="Skips ssl validation in case you have certificates issues (not recommended)")
+@click.option('--bitbucket-url', prompt=True, required=True, default="", help="Please enter the url for Bitbucket")
+@click.option('--jira-url', prompt=True, required=True, default="", help=" Please enter the url for Jira")
+@click.option('--confluence-url', prompt=True, required=True, default="", help="Please enter the url for Confluence")
+@click.option('--username', prompt=True, required=True, default="", help="Username")
+@click.option('--password', prompt=True, required=True, default="", hide_input=True, help="Password")
+def config(skipssl, bitbucket_url, jira_url, confluence_url, username, password):
     """Configure Gandalf for local use."""
     dict_file = dict()
     credentials = dict()
     confluence_config = dict()
     confluence_parentpages = dict()
 
-    dict_file["product-name"] = click.prompt(
-        "Please enter the name of the product", type=str)
-
-    dict_file["project-key"] = click.prompt(
-        "Please enter the project key on Jira", type=str)
-
-    dict_file["bitbucket-url"] = click.prompt(
-        "Please enter the url for Bitbucket", type=str)
-
-    dict_file["jira-url"] = click.prompt(
-        "Please enter the url for Jira", type=str)
-
-    dict_file["confluence-url"] = click.prompt(
-        "Please enter the url for Confluence", type=str)
-    confluence_config["spacekey"] = click.prompt(
-        "Please enter the space-key for your project's Confluence space", type=str)
-
-    confluence_parentpages["releasenote"] = click.prompt(
-        "Please enter the id for the release note parent page", type=str)
-
-    confluence_parentpages["changelog"] = click.prompt(
-        "Please enter the id for the changelog parent page", type=str)
-
-    confluence_config["parent-page-ids"] = confluence_parentpages
-
-    dict_file["confluence"] = confluence_config
-
-    credentials["username"] = click.prompt(
-        "Atlassian username", type=str)
-
-    credentials["password"] = click.prompt(
-        "Atlassian password", type=str)
-
+    dict_file["bitbucket-url"] = bitbucket_url.strip()
+    dict_file["jira-url"] = jira_url.strip()
+    dict_file["confluence-url"] = confluence_url.strip()
+    credentials["username"] = username.strip()
+    credentials["password"] = password.strip()
     dict_file["credentials"] = credentials
+    dict_file["skipssl"] = skipssl
 
     confManager.create_config(dict_file)
+    confManager.is_config_valid()
+
+class HiddenPassword(object):
+    def __init__(self, password=''):
+        self.password = password
+    def __str__(self):
+        return '*' * len(self.password)
