@@ -1,15 +1,11 @@
 import os, sys
 import click
 import pprint36 as pprint
-<<<<<<< HEAD
 from services import JiraService, PowerBIService
 from utils import CsvUtil
 
 verifyssl = False
-=======
-from services import JiraService
-skipssl = False
->>>>>>> b064a50... added lead time for changes
+
 
 
 @click.group()
