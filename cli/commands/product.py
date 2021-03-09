@@ -1,16 +1,10 @@
 import os, sys
 import click
 import pprint36 as pprint
-<<<<<<< HEAD
 from services import JiraService, PowerBIService
 from utils import CsvUtil
 
 verifyssl = False
-=======
-from services import JiraService
-skipssl = False
->>>>>>> d2c6d61... added lead time for changes
-
 
 @click.group()
 @click.pass_context
@@ -91,6 +85,7 @@ def info(ctx):
 @click.option('-j', '--project-key', required=True, default="", help="Project key used in your Jira project.")
 @click.option('--json/--no-json', required=False, default=False, help="Provides stats in json format.")
 <<<<<<< HEAD
+<<<<<<< HEAD
 @click.option('-p', '--powerbi-url', required=False, default="", help="Push data to a PowerBI Real Time Dataset if provided.")
 @click.option('--all-releases/--no-all-releases', required=False, default=False, help="Produces stats for all the releases created in a product. (Run it only once)")
 @click.option('--csv/--no-csv', required=False, default=False, help="Produces a csv file.")
@@ -99,6 +94,12 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
 =======
 def stats(ctx, version, project_key, json):
 >>>>>>> d2c6d61... added lead time for changes
+=======
+@click.option('-p', '--powerbi-url', required=False, default="", help="Push data to a PowerBI Real Time Dataset if provided.")
+@click.option('--all-releases/--no-all-releases', required=False, default=False, help="Produces stats for all the releases created in a product. (Run it only once)")
+@click.option('-s', '--since', required=False, default="", help="Specify start date for stats")
+def stats(ctx, version, project_key, json, powerbi_url, all_releases,since):
+>>>>>>> 0aae2cc... added lead time for all release since a date
     """Displays statistics about a product"""
     powerbi_service = None
     powerbi_url = powerbi_url.strip()
@@ -142,12 +143,29 @@ def stats(ctx, version, project_key, json):
 =======
             ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
     result = jira_service.get_deploy_frequency(project_key)
-    print(result)
     
-    if version is not None:
+    deploy_freq = result["deploy_freq"]
+    deploy_freq_date = result["deploy_freq_date"]
+
+    print("Number of releases published: {0}\nAverage days between releases: {1}".format(result["number_of_releases"],
+                deploy_freq))
+    
+    if len(powerbi_url) > 0 or all_releases is True:
+        powerbi_service = PowerBIService(powerbi_url)
+
+    if version is not None and all_releases is False:
         leadtime = jira_service.get_leadtime_for_changes_per_version(project_key,version)
         s_lead_time = "Version: {0}\nLead time for changes: {1}".format(version, leadtime)
-        print(s_lead_time)
-    
+        print(s_lead_time)    
 
+        if len(powerbi_url) > 0:
+            release_info = jira_service.get_project_version_infos(project_key, version)            
+            powerbi_service.push_data(project_key, version, release_info["releaseDate"], leadtime, deploy_freq, deploy_freq_date)  
+
+<<<<<<< HEAD
 >>>>>>> d2c6d61... added lead time for changes
+=======
+    elif all_releases is True:
+        leadtimes_all = jira_service.get_leadtime_for_changes_for_all(project_key, since)
+        powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq, deploy_freq_date)  
+>>>>>>> 0aae2cc... added lead time for all release since a date
