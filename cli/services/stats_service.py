@@ -45,7 +45,10 @@ class StatsService:
                 
             commit_date = date_parser.parse(s_date, fuzzy=True)
             sum_of_diffs+= abs((commit_date - release_date).days)            
-            
-        lead_time_to_release = sum_of_diffs / len(latest_commits)
-
-        return lead_time_to_release
+        
+        # TODO: replace date for when the ticket started to be in progress
+        if len(latest_commits) != 0:
+            lead_time_to_release = sum_of_diffs / len(latest_commits)
+            return lead_time_to_release
+        else:
+            return -1
