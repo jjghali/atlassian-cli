@@ -93,7 +93,7 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases,since):
     powerbi_url = powerbi_url.strip()
     jira_service = JiraService(
             ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
-    result = jira_service.get_deploy_frequency(project_key)
+    result = jira_service.get_deploy_frequency(project_key, since)
     
     deploy_freq = result["deploy_freq"]
     deploy_freq_date = result["deploy_freq_date"]
