@@ -185,7 +185,7 @@ class JiraService:
         output = "----------Issues----------\n{0}".format(table)
         return output
 
-<<<<<<< HEAD
+
     def get_deploy_frequency(self, project_key, since=None):
         
         releases = self.jiraInstance.get_project_versions(project_key)
@@ -207,26 +207,24 @@ class JiraService:
         result["number_of_releases"] = number_of_releases
         result["deploy_freq"] = average_meantime_between_releases
         result["deploy_freq_date"] = date.today()
-=======
-    def get_deploy_frequency(self, project_key):
-        releases = self.jiraInstance.get_project_versions(project_key)
-        published_releases = list(filter(lambda x: x["released"] , releases))
-        average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
-
-        number_of_releases = len(releases)
-<<<<<<< HEAD
-        result = "Number of releases published: {0}\nAverage days between releases: {1}".format(number_of_releases,
-                average_meantime_between_releases)
->>>>>>> d2c6d61... added lead time for changes
         
         if bool(since):
-            result["deploy_freq_per_release"] = deploy_freq_per_release
-=======
+            since = date_parser.parse(since)
+            published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) and date_parser.parse(x["releaseDate"]) >= since , releases))
+        
+        else:
+            published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) , releases))
+        
+        average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
+
+        number_of_releases = len(releases)        
         result = dict()
         result["number_of_releases"] = number_of_releases
         result["deploy_freq"] = average_meantime_between_releases
         result["deploy_freq_date"] = date.today()
->>>>>>> 0aae2cc... added lead time for all release since a date
+
+        if bool(since):
+            result["deploy_freq_per_release"] = deploy_freq_per_release
                 
         return result
     
@@ -239,23 +237,10 @@ class JiraService:
         leadtime = self.stats_service.calculate_lead_time_for_changes(version_info, issues, latest_commits)
         return leadtime
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    def get_leadtime_for_changes_for_all(self, project_key, since=None):
-        leadtimes = dict()
-        releases = self.get_project_published_versions(project_key, since)
-        
-=======
     def get_leadtime_for_changes_for_all(self, project_key, since=None):
         leadtimes = dict()
         releases = self.get_project_published_versions(project_key)
-        since = date_parser.parse(since)        
-        semantic_version = ""
-
-        if since is not None:
-            releases = list(filter(lambda x: date_parser.parse(x["releaseDate"]) >= since , releases))
-
->>>>>>> 0aae2cc... added lead time for all release since a date
+       
         for r in releases:
             l = self.get_leadtime_for_changes_per_version(project_key, r["name"])
             item = dict()
@@ -266,26 +251,17 @@ class JiraService:
             leadtimes[r["name"]] = item
             
         return leadtimes
-<<<<<<< HEAD
         
 
     def get_lastest_commits_for_issues(self, issues):
         latest_commits = dict()
-        not_added_due_to_error = ""
-=======
-=======
-    
->>>>>>> 0aae2cc... added lead time for all release since a date
-    def get_lastest_commits_for_issues(self, issues):
-        latest_commits = dict()
->>>>>>> d2c6d61... added lead time for changes
+        not_added_due_to_error = ""    
 
         for index, t in enumerate(issues):
             issue_key = t["key"]
             issue_id = t["id"]
             last_commit =  self.get_last_commit(issue_id)
-<<<<<<< HEAD
-            
+           
             if last_commit:
                 latest_commits[issue_key] = last_commit
             else:
@@ -404,19 +380,5 @@ class JiraService:
             else:
                 story_points_releases[r["name"]] = 0
         return story_points_releases
-=======
-            if last_commit:
-                latest_commits[issue_key] = last_commit
-
-        return latest_commits
-    
-    def get_last_commit(self, issue_id):
-        result = self.get_commits_from_issue(issue_id)
-        if len(result["detail"][0]["repositories"]) != 0:
-            return result["detail"][0]["repositories"][0]["commits"][0]
-        
-        return None
-<<<<<<< HEAD
->>>>>>> d2c6d61... added lead time for changes
-=======
->>>>>>> 0aae2cc... added lead time for all release since a date
+  
+   
