@@ -213,7 +213,10 @@ class JiraService:
             published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) and date_parser.parse(x["releaseDate"]) >= since , releases))
         
         else:
-            published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) , releases))
+            published_releases = list(filter(lambda x: x["released"], releases))
+        
+        if bool(since):
+            deploy_freq_per_release = self.stats_service.calculate_deploy_frequency_per_release(published_releases)
         
         average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
 
@@ -222,7 +225,6 @@ class JiraService:
         result["number_of_releases"] = number_of_releases
         result["deploy_freq"] = average_meantime_between_releases
         result["deploy_freq_date"] = date.today()
-
         if bool(since):
             result["deploy_freq_per_release"] = deploy_freq_per_release
                 
