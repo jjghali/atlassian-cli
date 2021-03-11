@@ -97,10 +97,17 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases,since):
     
     deploy_freq = result["deploy_freq"]
     deploy_freq_date = result["deploy_freq_date"]
+    deploy_freq_per_release = result["deploy_freq_per_release"]
 
-    print("Number of releases published: {0}\nAverage days between releases: {1}".format(result["number_of_releases"],
+    print("Number of releases published: {0}\nDeployment frequency: {1} days".format(result["number_of_releases"],
                 deploy_freq))
-    
+
+    # CSV generation
+    # print("Release,Deployment-frequency,Date")
+
+    # for key, f in deploy_freq_per_release.items():
+    #     print("{0},{1},{2}".format(key,f["deploy_freq"],f["releaseDate"]))
+
     if len(powerbi_url) > 0 or all_releases is True:
         powerbi_service = PowerBIService(powerbi_url)
 

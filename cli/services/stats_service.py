@@ -11,16 +11,35 @@ class StatsService:
         number_of_diffs = 0
         sum_of_diffs = 0
 
+        if len(releases) == 1:
+            return 0
+
         for index, r in enumerate(releases):
             if index > 0:
                 number_of_diffs += 1
                 date1 = date_parser.parse(releases[index]["releaseDate"], fuzzy=True)
                 date2 = date_parser.parse(releases[index-1]["releaseDate"], fuzzy=True)
                 sum_of_diffs +=abs((date1 - date2).days)
+            
         
         average = sum_of_diffs / number_of_diffs
         
         return average
+
+
+    def calculate_deploy_frequency_per_release(self, releases):        
+        deploy_freq_per_release = dict()
+        
+        for index, r in enumerate(releases):
+            deploy_freq = self.calculate_deploy_frequency(releases[:(index+1)])
+            deploy_freq_per_release[releases[index]["name"]] = dict()
+            deploy_freq_per_release[releases[index]["name"]]["deploy_freq"] = deploy_freq
+            deploy_freq_per_release[releases[index]["name"]]["releaseDate"] = r["releaseDate"]
+
+        # for index, r in enumerate(releases):
+              
+        
+        return deploy_freq_per_release
 
     def count_number_of_deploy_per_month(self, project_key, month=None):
         if(month is None):

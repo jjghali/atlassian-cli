@@ -102,7 +102,7 @@ class JiraService:
 
     def get_project_published_versions(self, project_key):
         releases = self.jiraInstance.get_project_versions_paginated(project_key, limit=1000)
-        published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) , releases["values"]))
+        published_releases = list(filter(lambda x: x["released"], releases["values"]))
         return published_releases
        
 
@@ -161,18 +161,24 @@ class JiraService:
         
         if bool(since):
             since = date_parser.parse(since)
-            published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) and date_parser.parse(x["releaseDate"]) >= since , releases))
+            published_releases = list(filter(lambda x: x["released"] and date_parser.parse(x["releaseDate"]) >= since , releases))
         
         else:
-            published_releases = list(filter(lambda x: x["released"] and bool(re.search(self.semver_regex, x["name"])) , releases))
+            published_releases = list(filter(lambda x: x["released"], releases))
+        
+        if bool(since):
+            deploy_freq_per_release = self.stats_service.calculate_deploy_frequency_per_release(published_releases)
         
         average_meantime_between_releases = self.stats_service.calculate_deploy_frequency(published_releases)
-
+        
         number_of_releases = len(releases)
         result = dict()
         result["number_of_releases"] = number_of_releases
         result["deploy_freq"] = average_meantime_between_releases
         result["deploy_freq_date"] = date.today()
+        
+        if bool(since):
+            result["deploy_freq_per_release"] = deploy_freq_per_release
                 
         return result
     
@@ -212,13 +218,21 @@ class JiraService:
             issue_key = t["key"]
             issue_id = t["id"]
             last_commit =  self.get_last_commit(issue_id)
+            
             if last_commit:
                 latest_commits[issue_key] = last_commit
+            else:
+                print("Issue {0} was not added due to an error.".format(issue_key))
 
         return latest_commits
     
     def get_last_commit(self, issue_id):
         result = self.get_commits_from_issue(issue_id)
+        
+        if "errorMessages" in result:
+            print("ERROR:{0}".format(result["errorMessages"]))
+            return None
+
         if len(result["detail"][0]["repositories"]) != 0:
             return result["detail"][0]["repositories"][0]["commits"][0]
         
