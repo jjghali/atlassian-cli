@@ -210,7 +210,8 @@ class JiraService:
             leadtimes[r["name"]] = item
             
         return leadtimes
-    
+        
+
     def get_lastest_commits_for_issues(self, issues):
         latest_commits = dict()
 
