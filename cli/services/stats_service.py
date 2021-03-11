@@ -1,4 +1,5 @@
 from dateutil import parser as date_parser
+from datetime import datetime
 import re
 import math
 
@@ -30,6 +31,8 @@ class StatsService:
     def calculate_deploy_frequency_per_release(self, releases):        
         deploy_freq_per_release = dict()
         
+        releases = sorted(releases, key=lambda x: datetime.strptime(x["releaseDate"], '%Y-%m-%d'), reverse=False)
+
         for index, r in enumerate(releases):
             deploy_freq = self.calculate_deploy_frequency(releases[:(index+1)])
             deploy_freq_per_release[releases[index]["name"]] = dict()

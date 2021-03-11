@@ -122,4 +122,4 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases,since):
 
     elif all_releases is True:
         leadtimes_all = jira_service.get_leadtime_for_changes_for_all(project_key, since)
-        powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq, deploy_freq_date)  
+        powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq_per_release)  
