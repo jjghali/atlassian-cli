@@ -45,8 +45,6 @@ pip install . # While in root of project
 ## Usage
 A guide for the tool can be found on the [Usage](./doc/Usage.md) page.
 
-## Usage
-A guide for the tool can be found on the [Usage](./doc/Usage.md) page.
 
 ## Features
 * Note de livraison qui affiche les etapes de livraison (comme les notes de livraison mpm)
