@@ -24,6 +24,25 @@ pip install -r requirements.txt
 ```
 pip install . # While in root of project
 ```
+
+## Concourse
+```yaml
+- task: generate release note
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: <repository link here>
+      run:
+        path: /bin/sh
+        args:
+          - -c
+          - |            
+            atlcli --help
+
+```
+
 ## Usage
 A guide for the tool can be found on the [Usage](./doc/Usage.md) page.
 
@@ -31,6 +50,7 @@ A guide for the tool can be found on the [Usage](./doc/Usage.md) page.
 * Note de livraison qui affiche les etapes de livraison (comme les notes de livraison mpm)
 * Changelog
 * Conversion de wiki markup a storage format et ajout des checklist manquante
+
 
 ### Addding pip dependencies
 After adding a new module to the project you will need to update the requirements.txt file in order for it to have the new module. You cand do this by running the following command.
