@@ -134,10 +134,7 @@ class JiraService:
             project_key, versionId)
         
         try:
-<<<<<<< HEAD
             # time.sleep(3)
-=======
->>>>>>> 8db06a1... added csv support
             data = self.jiraInstance.jql(jql_query)["issues"]
         except requests.exceptions.ReadTimeout:
             sys.exit("ERROR: timeout error with the JQL query for retrieving the isssues associated to a project version")
@@ -254,12 +251,7 @@ class JiraService:
                 
 
         if len(not_added_due_to_error) > 0:
-<<<<<<< HEAD
             print("The following issues does not have commits: {0} \n".format(issue_key))            
-=======
-            print("The following issues were not added due to an error: {0} \n".format(issue_key))
-            print("You may not have the correct permissions to the projects.")
->>>>>>> 8db06a1... added csv support
 
         return latest_commits
     
