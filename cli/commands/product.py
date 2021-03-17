@@ -2,6 +2,7 @@ import os, sys
 import click
 import pprint36 as pprint
 from services import JiraService, PowerBIService
+from utils import CsvUtil
 
 skipssl = False
 
@@ -86,8 +87,9 @@ def info(ctx):
 @click.option('--json/--no-json', required=False, default=False, help="Provides stats in json format.")
 @click.option('-p', '--powerbi-url', required=False, default="", help="Push data to a PowerBI Real Time Dataset if provided.")
 @click.option('--all-releases/--no-all-releases', required=False, default=False, help="Produces stats for all the releases created in a product. (Run it only once)")
+@click.option('--csv/--no-csv', required=False, default=False, help="Produces a csv file.")
 @click.option('-s', '--since', required=False, default="", help="Specify start date for stats")
-def stats(ctx, version, project_key, json, powerbi_url, all_releases,since):
+def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since):
     """Displays statistics about a product"""
     powerbi_service = None
     powerbi_url = powerbi_url.strip()
@@ -101,12 +103,10 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases,since):
 
     print("Number of releases published: {0}\nDeployment frequency: {1} days".format(result["number_of_releases"],
                 deploy_freq))
-
-    # CSV generation
-    # print("Release,Deployment-frequency,Date")
-
-    # for key, f in deploy_freq_per_release.items():
-    #     print("{0},{1},{2}".format(key,f["deploy_freq"],f["releaseDate"]))
+    
+    if csv and all_releases:
+        csv_util = CsvUtil()
+        csv_util.create_product_stats_csv(deploy_freq_per_release.items())
 
     if len(powerbi_url) > 0 or all_releases is True:
         powerbi_service = PowerBIService(powerbi_url)
@@ -118,7 +118,8 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases,since):
 
         if len(powerbi_url) > 0:
             release_info = jira_service.get_project_version_infos(project_key, version)            
-            powerbi_service.push_data(project_key, version, release_info["releaseDate"], leadtime, deploy_freq, deploy_freq_date)  
+            powerbi_service.push_data(project_key, version, release_info["releaseDate"], leadtime, deploy_freq, deploy_freq_date)
+            print("INFO: Data pushed to PowerBI")
 
     elif all_releases is True:
         leadtimes_all = jira_service.get_leadtime_for_changes_for_all(project_key, since)

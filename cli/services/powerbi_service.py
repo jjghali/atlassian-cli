@@ -53,7 +53,6 @@ class PowerBIService:
             querystring = {}        
             headers = {'Content-Type': 'application/json'}
 
-            response = requests.request("POST", url, data=payload, headers=headers, params=querystring)
-            print("INFO: Data pushed to PowerBI")
+            response = requests.request("POST", url, data=payload, headers=headers, params=querystring)            
         except HTTPError:
             sys.exit("ERROR: The was an issue with the api url provided or the data provided.")

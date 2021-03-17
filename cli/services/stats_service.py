@@ -74,3 +74,4 @@ class StatsService:
             return lead_time_to_release
         else:
             return -1
+            
