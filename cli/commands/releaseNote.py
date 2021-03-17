@@ -1,7 +1,7 @@
 import os, sys
 import click
 import json
-from cli.services import ConfluenceService
+from services import ConfluenceService
 
 skipssl = False
 
@@ -9,7 +9,7 @@ skipssl = False
 @click.group()
 @click.pass_context
 def releaseNote(ctx):
-    """Creates a release note one on Confluence"""
+
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
     ctx.obj['bitbucket_url'] = context_parent.obj["bitbucket_url"]
@@ -30,6 +30,7 @@ def releaseNote(ctx):
 @click.option('-t', '--template-file', required=True, default="", help="Path to the template file for your changelog")
 @click.option('--dry-run/--no-dry-run', required=False, default=False, help="Dry run for testing")
 def generate(ctx, version, space_key, project_key, parent_page_id, template_file, dry_run):
+    """Creates a release note one on Confluence"""
     version = version.strip()
     project_key = project_key.strip()
     space_key = space_key.strip()

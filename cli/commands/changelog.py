@@ -1,9 +1,9 @@
 import click
 import json
 import os, sys
-from cli.services import ConfluenceService
-from cli.services import BitbucketService
-from cli.services import SonarQubeService
+from services import ConfluenceService
+from services import BitbucketService
+from services import SonarQubeService
 
 skipssl = False
 
