@@ -131,3 +131,5 @@ dmypy.json
 bitbucket_volume/
 gdlf_config.yml
 .vscode/
+
+*.csv

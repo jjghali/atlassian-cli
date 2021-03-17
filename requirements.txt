@@ -5,3 +5,4 @@ PyYAML>=5.4.1
 semantic-version>=2.8.5
 pprint36>=3.9.0.2
 requests>=2.25.1
+python-dateutil==2.8.1
