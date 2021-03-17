@@ -109,8 +109,12 @@ class JiraService:
     def get_project_version_issues(self, project_key, versionId):
         jql_query = "project = {0} AND fixVersion = {1} AND (type = Story OR type = Improvement ) order by key".format(
             project_key, versionId)
+        
+        try:
+            data = self.jiraInstance.jql(jql_query)["issues"]
+        except requests.exceptions.ReadTimeout:
+            sys.exit("ERROR: timeout error with the JQL query for retrieving the isssues associated to a project version")
 
-        data = self.jiraInstance.jql(jql_query)["issues"]
         return data
 
     def get_issues_confluence_markup(self, project_key, versionId):
@@ -214,6 +218,7 @@ class JiraService:
 
     def get_lastest_commits_for_issues(self, issues):
         latest_commits = dict()
+        not_added_due_to_error = ""
 
         for index, t in enumerate(issues):
             issue_key = t["key"]
@@ -223,7 +228,12 @@ class JiraService:
             if last_commit:
                 latest_commits[issue_key] = last_commit
             else:
-                print("Issue {0} was not added due to an error.".format(issue_key))
+                not_added_due_to_error += "{0}, ".format(issue_key)
+                
+
+        if len(not_added_due_to_error) > 0:
+            print("The following issues were not added due to an error: {0} \n".format(issue_key))
+            print("You may not have the correct permissions to the projects.")
 
         return latest_commits
     
