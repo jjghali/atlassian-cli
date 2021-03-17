@@ -96,13 +96,30 @@ class JiraService:
             if "releaseDate" not in versionData:
                 versionData["releaseDate"] = ""
             
+            story_points = self.get_total_story_points_per_version(project_key, versionData["id"])
+            
+            if story_points:
+                versionData["story-points"] = story_points
+
             return versionData
         else:
             return None
 
-    def get_project_published_versions(self, project_key):
+    def get_project_published_versions(self, project_key, since=None):
         releases = self.jiraInstance.get_project_versions_paginated(project_key, limit=1000)
         published_releases = list(filter(lambda x: x["released"], releases["values"]))
+
+        since = date_parser.parse(since)        
+
+        if since is not None:
+            published_releases = list(filter(lambda x: date_parser.parse(x["releaseDate"]) >= since , published_releases))
+
+        for r in published_releases:
+            story_points = self.get_total_story_points_per_version(project_key, r["id"])
+            
+            if story_points:
+                r["story-points"] = story_points
+
         return published_releases
        
 
@@ -197,13 +214,8 @@ class JiraService:
 
     def get_leadtime_for_changes_for_all(self, project_key, since=None):
         leadtimes = dict()
-        releases = self.get_project_published_versions(project_key)
-        since = date_parser.parse(since)        
-        semantic_version = ""
-
-        if since is not None:
-            releases = list(filter(lambda x: date_parser.parse(x["releaseDate"]) >= since , releases))
-
+        releases = self.get_project_published_versions(project_key, since)
+        
         for r in releases:
             l = self.get_leadtime_for_changes_per_version(project_key, r["name"])
             item = dict()
@@ -248,3 +260,25 @@ class JiraService:
             return result["detail"][0]["repositories"][0]["commits"][0]
         
         return None
+
+    def get_total_story_points_per_version(self, project_key, version_id):
+        issues = self.get_project_version_issues(project_key, version_id)
+        total_story_points = 0
+        
+        for issue in issues:            
+
+            if "customfield_10105" in issue["fields"] and issue["fields"]["customfield_10105"] is not None:
+                total_story_points += issue["fields"]["customfield_10105"]
+        
+        return total_story_points
+        
+    def get_total_story_points_all(self, project_key, since):
+        releases = self.get_project_published_versions(project_key, since)
+        story_points_releases = dict()
+        
+        for r in releases:
+            if "story-points" in r:
+                story_points_releases[r["name"]] = r["story-points"]
+            else:
+                story_points_releases[r["name"]] = 0
+        pass
