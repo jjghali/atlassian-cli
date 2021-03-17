@@ -97,6 +97,7 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
             ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
     result = jira_service.get_deploy_frequency(project_key, since)
     
+
     deploy_freq = result["deploy_freq"]
     deploy_freq_date = result["deploy_freq_date"]
     deploy_freq_per_release = result["deploy_freq_per_release"]
@@ -117,10 +118,13 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
         print(s_lead_time)    
 
         if len(powerbi_url) > 0:
-            release_info = jira_service.get_project_version_infos(project_key, version)            
+            release_info = jira_service.get_project_version_infos(project_key, version)
+
             powerbi_service.push_data(project_key, version, release_info["releaseDate"], leadtime, deploy_freq, deploy_freq_date)
             print("INFO: Data pushed to PowerBI")
 
     elif all_releases is True:
         leadtimes_all = jira_service.get_leadtime_for_changes_for_all(project_key, since)
-        powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq_per_release)  
+        storypoints_all = jira_service.get_total_story_points_all(project_key,since)
+        
+        powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq_per_release, storypoints_all)
