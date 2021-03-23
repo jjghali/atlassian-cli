@@ -7,38 +7,38 @@ $ atlcli [COMMON_ARGS] changelog [SUBCOMMAND] [OPTION]...
 ```
 ## Sub commands
 
-|Name|Description|
-|-|-|
-|generate-component| Creates the changelog for a component on confluence|
-|generate-product| Creates the changelog for a product on confluence|
+| Name               | Description                                         | 
+|--------------------|-----------------------------------------------------|
+| generate-component | Creates the changelog for a component on confluence |
+| generate-product   | Creates the changelog for a product on confluence   |
 
 ## Options and arguments
 ### generate-component
-|Name|Mandatory|Description|
-|-|-|-|
-|`-v, --version `|Required|Component/service version |
-|`-s, --space-key`|Required|Space key for the Confluence space |
-|`-n, --component-name` |Required|Component name |
-|`-i, --parent-page-id`|Required|Id of the page under which you will create your changelogs|
-|`-t, --template-file `|Required|Path to the template file for your changelog|
-|`--sonar-project-key `|Optional|Project key on SonarQube.|
-|`--sonar-api-key`|Optional|SonarQube API Key.|
-|`--sonar-url`|Optional|URL to SonarQube.|
-|`--dry-run / --no-dry-run`|Optional|Dry run for testing|
-|`--help`|Optional|Show the help.|
+| Name                        | Mandatory | Description                                                |
+|-----------------------------|-----------|------------------------------------------------------------|
+| `-v, --version `            | Required  | Component/service version                                  |
+| `-s, --space-key`           | Required  | Space key for the Confluence space                         |
+| `-n, --component-name`      | Required  | Component name                                             |
+| `-i, --parent-page-id`      | Required  | Id of the page under which you will create your changelogs |
+| `-t, --template-file `      | Required  | Path to the template file for your changelog               |
+| `--sonar-project-key `      | Optional  | Project key on SonarQube.                                  |
+| `--sonar-api-key`           | Optional  | SonarQube API Key.                                         |
+| `--sonar -url`              | Optional  | URL to SonarQube.                                          |
+| `--dry -run / --no-dry-run` | Optional  | Dry run for testing                                        |
+| `--help`                    | Optional  | Show the help.                                             |
 
 ### generate-product
-|Name|Mandatory|Description|
-|-|-|-|
-|`-v, --version `||Product version |
-|`-s, --space-key`||Space key for the Confluence space |
-|`-n, --product-name` ||Product name |
-|`-f, --configuration-repos`| |  Name of the repos where the configurations are stored|
-|`-j, --project-key` ||Project key used in your Jira project|
-|`-i, --parent-page-id`||Id of the page under which you will create your changelogs|
-|`-t, --template-file `||Path to the template file for your changelog|
-|`--dry-run / --no-dry-run`||Dry run for testing|
-|`--help`||Show the help.|
+| Name                        | Mandatory | Description                                                |
+|-----------------------------|-----------|------------------------------------------------------------|
+| `-v, --version `            |           | Product version                                            |
+| `-s, --space-key`           |           | Space key for the Confluence space                         |
+| `-n, --product-name`        |           | Product name                                               |
+| `-f, --configuration-repos` |           | Name of the repos where the configurations are stored      |
+| `-j, --project-key`         |           | Project key used in your Jira project                      |
+| `-i, --parent-page-id`      |           | Id of the page under which you will create your changelogs |
+| `-t, --template-file `      |           | Path to the template file for your changelog               |
+| `--dry-run / --no-dry-run`  |           | Dry run for testing                                        |
+| `--help`                    |           | Show the help.                                             |
 
 ## Examples
 ### generate-component
