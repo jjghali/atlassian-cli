@@ -28,7 +28,7 @@ atlcli [OPTION]... [COMMAND] [SUBCOMMAND] [OPTION]...
 
 |Name| Mandatory |Description|
 |--|--|--|
-|`--skipssl/--no-skipssl`|Optional|Skips ssl validation in case you have certificates issues (not recommended)|
+|`--verifyssl/--no-verifyssl`|Optional|Skips ssl validation in case you have certificates issues (not recommended)|
 |`--bitbucket-url`|Required| Bitbucket URL|
 |`--jira-url`|Required| Jira URL|
 |`--confluence-url`|Required| Confluence URL|
@@ -51,7 +51,7 @@ atlcli [OPTION]... [COMMAND] [SUBCOMMAND] [OPTION]...
 ## Examples
 ### Generate a release note
 ```bash
-$ atlcli --skipssl \
+$ atlcli --verifyssl \
         --jira-url=$JIRA_URL \
         --confluence-url=$CONFLUENCE_URL \
         --bitbucket-url=$BITBUCKET_URL \

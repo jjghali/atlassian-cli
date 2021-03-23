@@ -10,15 +10,15 @@ import pprint36 as pprint
 
 class BitbucketService:
 
-    def __init__(self, url, username, password, skipssl):
+    def __init__(self, url, username, password, verifyssl):
         
-        self.skipssl = skipssl
+        self.verifyssl = verifyssl
         
         self.bitbucketInstance = Bitbucket(
             url=url,
             username=username,
             password=password,
-            verify_ssl=self.skipssl)
+            verify_ssl=self.verifyssl)
 
     def get_release(self, product_name, component_name, version):
 
@@ -53,7 +53,7 @@ class BitbucketService:
         }
 
         response = requests.request(
-            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.skipssl)
+            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.verifyssl)
         result = json.loads(response.text)
 
         for t in result["values"]:

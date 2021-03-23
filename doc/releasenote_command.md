@@ -26,7 +26,7 @@ $ atlcli [COMMON_ARGS] releasenote [SUBCOMMAND] [OPTION]...
 ## Example
 ### generate
 ```bash
-$ atlcli --skipssl \
+$ atlcli --verifyssl \
          --jira-url=http://jira.contoso.com \
          --confluence-url=http://confluence.contoso.com \
          --bitbucket-url=http://bitbucket.contoso.com \

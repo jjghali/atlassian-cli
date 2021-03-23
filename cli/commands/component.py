@@ -14,7 +14,7 @@ def component(ctx):
     """Get information about a component"""
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
-    ctx.obj['skipssl'] = context_parent.obj["skipssl"]
+    ctx.obj['verifyssl'] = context_parent.obj["verifyssl"]
     pass
 
 
@@ -26,7 +26,7 @@ def component(ctx):
 def release(ctx, component_name, product_name, version):
     component_name = component_name.strip()
     version = version.strip()
-    bitbucket_service = BitbucketService(ctx.obj['skipssl'])
+    bitbucket_service = BitbucketService(ctx.obj['verifyssl'])
     changelog = bitbucket_service.get_release(
         product_name, component_name, version)
     print(changelog)

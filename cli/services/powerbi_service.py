@@ -4,8 +4,9 @@ import json
 from datetime import datetime
 
 class PowerBIService:
-    def __init__(self, api_url):
-        self.api_url = api_url        
+    def __init__(self, api_url, verifyssl = False):
+        self.api_url = api_url
+        self.verifyssl = verifyssl
 
     def push_data(self, product, version, release_date, lead_time_for_changes, deploy_freq, deploy_freq_date):
         payload = self.prepare_payload(product, version, release_date, lead_time_for_changes, deploy_freq, deploy_freq_date)   
@@ -62,6 +63,6 @@ class PowerBIService:
             querystring = {}        
             headers = {'Content-Type': 'application/json'}
 
-            response = requests.request("POST", url, data=payload, headers=headers, params=querystring)            
+            response = requests.request("POST", url, data=payload, headers=headers, params=querystring, verify=self.verifyssl)
         except HTTPError:
             sys.exit("ERROR: The was an issue with the api url provided or the data provided.")
