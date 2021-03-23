@@ -14,7 +14,7 @@ confManager = ConfigurationManager()
 @click.option('--username', prompt=True, required=True, default="", help="Username")
 @click.option('--password', prompt=True, required=True, default="", hide_input=True, help="Password")
 def config(skipssl, bitbucket_url, jira_url, confluence_url, username, password):
-    """Configure Gandalf for local use."""
+    """Configure Atlassian CLI for local use."""
     dict_file = dict()
     credentials = dict()
     confluence_config = dict()
@@ -26,13 +26,13 @@ def config(skipssl, bitbucket_url, jira_url, confluence_url, username, password)
     credentials["username"] = username.strip()
     credentials["password"] = password.strip()
     dict_file["credentials"] = credentials
-    dict_file["skipssl"] = skipssl
+    dict_file["verifyssl"] = skipssl
 
     confManager.create_config(dict_file)
     confManager.is_config_valid()
 
 class HiddenPassword(object):
-    def __init__(self, password=''):
+    def __init__(self, password):
         self.password = password
     def __str__(self):
         return '*' * len(self.password)

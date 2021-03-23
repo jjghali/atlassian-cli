@@ -3,7 +3,7 @@ import click
 import json
 from services import ConfluenceService
 
-skipssl = False
+verifyssl = False
 
 
 @click.group()
@@ -17,7 +17,7 @@ def releaseNote(ctx):
     ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
     ctx.obj['username'] = context_parent.obj["username"]
     ctx.obj['password'] = context_parent.obj["password"]
-    skipssl = context_parent.obj["skipssl"]
+    verifyssl = context_parent.obj["verifyssl"]
     pass
 
 
@@ -38,7 +38,7 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
     template_file = template_file.strip()
 
     confluence_service = ConfluenceService(
-        ctx.obj['confluence_url'], ctx.obj['jira_url'], ctx.obj['bitbucket_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
+        ctx.obj['confluence_url'], ctx.obj['jira_url'], ctx.obj['bitbucket_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['verifyssl'])
     tupleResult = confluence_service.generate_releasenote(
         project_key, version, template_file)
 

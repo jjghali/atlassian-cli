@@ -43,7 +43,7 @@ $ atlcli [COMMON_ARGS] changelog [SUBCOMMAND] [OPTION]...
 ## Examples
 ### generate-component
 ```bash
-$ atlcli --skipssl \
+$ atlcli --verifyssl \
          --jira-url=http://jira.contoso.com \
          --confluence-url=http://confluence.contoso.com \
          --bitbucket-url=http://bitbucket.contoso.com \
@@ -58,7 +58,7 @@ $ atlcli --skipssl \
 ```
 ### generate-product
 ```bash
-$ atlcli --skipssl \
+$ atlcli --verifyssl \
          --jira-url=http://jira.contoso.com \
          --confluence-url=http://confluence.contoso.com \
          --bitbucket-url=http://bitbucket.contoso.com \

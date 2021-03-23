@@ -5,7 +5,7 @@ from services import ConfluenceService
 from services import BitbucketService
 from services import SonarQubeService
 
-skipssl = False
+verifyssl = False
 
 
 @click.group()
@@ -22,7 +22,7 @@ def changelog(ctx):
     ctx.obj['password'] = context_parent.obj["password"]
     
 
-    skipssl = context_parent.obj["skipssl"]
+    verifyssl = context_parent.obj["verifyssl"]
     pass
 
 
@@ -54,7 +54,7 @@ def generate_product(ctx, version, space_key, product_name,
         ctx.obj['bitbucket_url'], 
         ctx.obj['username'], 
         ctx.obj['password'], 
-        ctx.obj['skipssl'])
+        ctx.obj['verifyssl'])
 
     if not configuration_repos:
         configuration_repos = "configuration"
@@ -97,11 +97,11 @@ def generate_component(ctx, version, space_key, component_name, parent_page_id, 
     ctx.obj['bitbucket_url'], 
     ctx.obj['username'], 
     ctx.obj['password'], 
-    ctx.obj['skipssl'])
+    ctx.obj['verifyssl'])
     
     if space_key is not None or parent_page_id is not None:
         if sonar_api_key is not None and sonar_project_key is not None:
-            sonar_service = SonarQubeService(sonar_url, sonar_api_key, skipssl)       
+            sonar_service = SonarQubeService(sonar_url, sonar_api_key, verifyssl)       
             sonar_measures = sonar_service.get_measures(sonar_project_key)
             
         if not dry_run:

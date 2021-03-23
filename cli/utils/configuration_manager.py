@@ -11,7 +11,7 @@ class ConfigurationManager:
     def load_config(self):
         try:
             with open(self.DEFAULT_CONFIG_FILE_PATH) as file:
-                data = yaml.load(file, Loader=yaml.FullLoader)
+                data = yaml.safe_load(file, Loader=yaml.FullLoader)
             return data
         except IOError:            
             return None        
