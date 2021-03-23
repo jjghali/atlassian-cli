@@ -5,10 +5,6 @@ from services import ConfluenceService
 from services import BitbucketService
 from services import SonarQubeService
 
-from services import ConfluenceService
-from services import BitbucketService
-from services import SonarQubeService
-
 verifyssl = False
 
 
