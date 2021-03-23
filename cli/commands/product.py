@@ -4,7 +4,7 @@ import pprint36 as pprint
 from services import JiraService, PowerBIService
 from utils import CsvUtil
 
-skipssl = False
+verifyssl = False
 
 
 @click.group()
@@ -16,7 +16,7 @@ def product(ctx):
     ctx.obj['jira_url'] = context_parent.obj["jira_url"]    
     ctx.obj['username'] = context_parent.obj["username"]
     ctx.obj['password'] = context_parent.obj["password"]
-    skipssl = context_parent.obj["skipssl"]
+    verifyssl = context_parent.obj["verifyssl"]
     pass
 
 @product.command()
@@ -45,7 +45,7 @@ def versions(ctx):
 def tickets(ctx, product_version, project_key, changes, confluence):
     """Lists all components of a product"""
     jira_service = JiraService(
-        ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
+        ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['verifyssl'])
 
     product_version = product_version.strip()
     versionInfo = jira_service.get_project_version_infos(project_key,
@@ -94,7 +94,7 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
     powerbi_service = None
     powerbi_url = powerbi_url.strip()
     jira_service = JiraService(
-            ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['skipssl'])
+            ctx.obj['jira_url'], ctx.obj['username'], ctx.obj['password'], ctx.obj['verifyssl'])
     result = jira_service.get_deploy_frequency(project_key, since)
     
 
@@ -110,7 +110,7 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
         csv_util.create_product_stats_csv(deploy_freq_per_release.items())
 
     if len(powerbi_url) > 0 or all_releases is True:
-        powerbi_service = PowerBIService(powerbi_url)
+        powerbi_service = PowerBIService(api_url=powerbi_url, verifyssl=ctx.obj['verifyssl'] )
 
     if version is not None and all_releases is False:
         leadtime = jira_service.get_leadtime_for_changes_per_version(project_key,version)

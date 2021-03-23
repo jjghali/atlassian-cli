@@ -14,26 +14,26 @@ class ConfluenceService:
     product_changelog_template = ""
     component_changelog_template = ""
 
-    def __init__(self, confluence_url, jira_url, bibucket_url, username, password, skipssl):
+    def __init__(self, confluence_url, jira_url, bibucket_url, username, password, verifyssl):
 
-        self.skipssl = skipssl
+        self.verifyssl = verifyssl
         self.jira_service = JiraService(
             url=jira_url,
             username=username,
             password=password,
-            skipssl=self.skipssl)
+            verifyssl=self.verifyssl)
 
         self.bitbucket_service = BitbucketService(
             url=bibucket_url,
             username=username,
             password=password,
-            skipssl=self.skipssl)
+            verifyssl=self.verifyssl)
 
         self.confluence = Confluence(
             url=confluence_url,
             username=username,
             password=password,
-            verify_ssl=self.skipssl
+            verify_ssl=self.verifyssl
         )
 
         self.load_product_changelog_template()

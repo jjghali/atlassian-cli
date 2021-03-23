@@ -3,7 +3,7 @@ import click
 import json
 from services import ConfluenceService
 
-skipssl = False
+verifyssl = False
 
 @click.group()
 @click.pass_context
@@ -15,7 +15,7 @@ def stats(ctx):
     ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
     ctx.obj['username'] = context_parent.obj["username"]
     ctx.obj['password'] = context_parent.obj["password"]
-    skipssl = context_parent.obj["skipssl"]
+    verifyssl = context_parent.obj["verifyssl"]
     pass
 
 

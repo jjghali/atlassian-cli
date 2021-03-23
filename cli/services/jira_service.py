@@ -2,6 +2,7 @@ import re
 import base64
 import json
 import ssl
+import sys, os
 from datetime import date
 from dateutil import parser as date_parser
 
@@ -15,9 +16,9 @@ from .stats_service import StatsService
 
 class JiraService:
 
-    def __init__(self, url, username, password, skipssl):
+    def __init__(self, url, username, password, verifyssl):
         self.semver_regex = r"(([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?)"
-        self.skipssl = skipssl
+        self.verifyssl = verifyssl
         self.url = url        
         self.username = username
         self.password = password
@@ -25,7 +26,7 @@ class JiraService:
             url=url,
             username=username,
             password=password,
-            verify_ssl=self.skipssl)
+            verify_ssl=self.verifyssl)
 
         self.stats_service = StatsService()
 
@@ -66,9 +67,11 @@ class JiraService:
         }
 
         response = requests.request(
-            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.skipssl)
-        result = json.loads(response.text)
-        return result
+            "GET", endpoint_url, data=payload, headers=headers, params=querystring, verify=self.verifyssl)
+        if response.ok:
+            return json.loads(response.text)
+        else:
+            return None
 
     def get_repositories_from_issue(self, issue_id):
         commits = self.get_commits_from_issue(issue_id)
@@ -252,8 +255,7 @@ class JiraService:
     def get_last_commit(self, issue_id):
         result = self.get_commits_from_issue(issue_id)
         
-        if "errorMessages" in result:
-            print("ERROR:{0}".format(result["errorMessages"]))
+        if not result:            
             return None
 
         if len(result["detail"][0]["repositories"]) != 0:
@@ -281,4 +283,4 @@ class JiraService:
                 story_points_releases[r["name"]] = r["story-points"]
             else:
                 story_points_releases[r["name"]] = 0
-        pass
+        return story_points_releases

@@ -29,7 +29,7 @@ def cli(ctx, skipssl, bitbucket_url, jira_url, confluence_url, username, passwor
     
     if ctx.invoked_subcommand != "config":
         if (bitbucket_url or jira_url or confluence_url) and username and password:
-            ctx.obj['skipssl'] = not skipssl
+            ctx.obj['verifyssl'] = not skipssl
             ctx.obj['bitbucket_url'] = bitbucket_url.strip()
             ctx.obj['jira_url'] = jira_url.strip()
             ctx.obj['confluence_url'] = confluence_url.strip()
@@ -37,7 +37,7 @@ def cli(ctx, skipssl, bitbucket_url, jira_url, confluence_url, username, passwor
             ctx.obj['password'] = password.strip()
         elif confManager.is_config_valid():
             configs = confManager.load_config()
-            ctx.obj['skipssl'] = configs['skipssl']
+            ctx.obj['verifyssl'] = configs['verifyssl']
             ctx.obj['bitbucket_url'] = configs['bitbucket_url']
             ctx.obj['jira_url'] = configs['jira_url']
             ctx.obj['confluence_url'] = configs['confluence_url']
