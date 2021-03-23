@@ -7,7 +7,6 @@ from utils import CsvUtil
 verifyssl = False
 
 
-
 @click.group()
 @click.pass_context
 def product(ctx):    
