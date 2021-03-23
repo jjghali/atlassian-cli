@@ -92,3 +92,18 @@ NYI
     --since=2020/09/01 \
     --csv
 ```
+
+#### **To a CSV file with all releases**
+```bash
+    atlcli \
+    --skipssl \
+     --jira-url=https://jira.contoso.com/ \
+    --username=edward.elric \
+    --password=alchemy123 \
+    product \
+    stats \
+    --project-key=FMA \                
+    --all-releases \
+    --since=2020/09/01 \
+    --csv
+```
