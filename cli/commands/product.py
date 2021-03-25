@@ -124,6 +124,7 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
             print("INFO: Data pushed to PowerBI")
 
     elif all_releases is True:
+        commits_delta = jira_service.get_delta_first_and_last_commits_all(project_key)
         leadtimes_all = jira_service.get_leadtime_for_changes_for_all(project_key, since)
         storypoints_all = jira_service.get_total_story_points_all(project_key,since)
         
