@@ -361,6 +361,16 @@ class JiraService:
 
         return delta_per_release
 
+    def get_delta_first_and_last_commits_all(self, project_key):
+        releases = self.jiraInstance.get_project_versions_paginated(project_key, limit=1000)["values"]
+        
+        delta_per_release = dict()
+        
+        for r in releases:
+            delta_per_release[r["name"]] = self.get_delta_first_and_last_commits(project_key, r["id"])
+
+        return delta_per_release
+
     def get_total_story_points_per_version(self, project_key, version_id):
         issues = self.get_project_version_issues(project_key, version_id)
         total_story_points = 0
