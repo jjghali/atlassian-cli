@@ -16,8 +16,6 @@ jobs:
       - uses: actions/checkout@master
       - name: Fetch all history for all tags and branches
         run: git fetch --prune --unshallow
-<<<<<<< HEAD
-<<<<<<< HEAD
       - name: Triggered tag
         run: echo $GITHUB_REF
       - name: Set up Python 3.9
