@@ -252,16 +252,67 @@ class JiraService:
 
         return latest_commits
     
-    def get_last_commit(self, issue_id):
-        result = self.get_commits_from_issue(issue_id)
-        
-        if not result:            
-            return None
+    def get_last_commit(self, issue_id=None, commits=None):
+        if commits is None:
+            result = self.get_commits_from_issue(issue_id)
+            
+            if not result:            
+                return None
 
-        if len(result["detail"][0]["repositories"]) != 0:
-            return result["detail"][0]["repositories"][0]["commits"][0]
+            if len(result["detail"][0]["repositories"]) != 0:
+                # commits are in DSC order
+                result = result["detail"][0]["repositories"][0]["commits"]        
+                
+        else:
+            result = commits
+       
+        return result[0]        
+
+    def get_first_commit(self, issue_id=None, commits = None):
+        if commits is None:
+            result = self.get_commits_from_issue(issue_id)
+            
+            if not result:            
+                return None
+
+            if len(result["detail"][0]["repositories"]) != 0:
+                # commits are in DSC order
+                result = result["detail"][0]["repositories"][0]["commits"]
+        else:
+            result = commits
         
+        commit_count = len(result)
+        return result[commit_count - 1]
+
+    def get_delta_first_and_last_commits(self, project_key, version_id):
+        issues = self.get_project_version_issues(project_key, version_id)
+        last_commits = dict()
+        first_commits = dict()
+
+        for issue in issues:
+            commits_from_issue = self.get_commits_from_issue(issue["id"])
+            if len(commits_from_issue["detail"][0]["repositories"]) != 0:
+                commits_from_issue = commits_from_issue["detail"][0]["repositories"][0]["commits"]
+            
+                if commits_from_issue:
+                    first_commit = self.get_first_commit(commits=commits_from_issue)
+                    last_commit = self.get_last_commit(commits=commits_from_issue)
+    
+                    if first_commit and last_commit:
+                        first_commits[issue["key"]] = first_commit
+                        last_commits[issue["key"]] = last_commit
+
         return None
+
+    def get_delta_first_and_last_commits_all(self, project_key):
+        releases = self.jiraInstance.get_project_versions_paginated(project_key, limit=1000)["values"]
+        
+        delta_per_release = dict()
+        
+        for r in releases:
+            delta_per_release[r["name"]] = self.get_delta_first_and_last_commits(project_key, r["id"])
+
+        return delta_per_release
 
     def get_total_story_points_per_version(self, project_key, version_id):
         issues = self.get_project_version_issues(project_key, version_id)
