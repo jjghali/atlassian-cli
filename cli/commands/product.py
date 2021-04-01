@@ -128,4 +128,4 @@ def stats(ctx, version, project_key, json, powerbi_url, all_releases, csv, since
         leadtimes_all = jira_service.get_leadtime_for_changes_for_all(project_key, since)
         storypoints_all = jira_service.get_total_story_points_all(project_key,since)
         
-        powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq_per_release, storypoints_all)
+        powerbi_service.push_data_all(project_key, leadtimes_all, deploy_freq_per_release, storypoints_all,commits_delta)
