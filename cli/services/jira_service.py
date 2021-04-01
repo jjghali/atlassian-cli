@@ -1,4 +1,5 @@
 import re
+import time
 import base64
 import json
 import ssl
@@ -131,6 +132,7 @@ class JiraService:
             project_key, versionId)
         
         try:
+            # time.sleep(3)
             data = self.jiraInstance.jql(jql_query)["issues"]
         except requests.exceptions.ReadTimeout:
             sys.exit("ERROR: timeout error with the JQL query for retrieving the isssues associated to a project version")
@@ -247,8 +249,7 @@ class JiraService:
                 
 
         if len(not_added_due_to_error) > 0:
-            print("The following issues were not added due to an error: {0} \n".format(issue_key))
-            print("You may not have the correct permissions to the projects.")
+            print("The following issues does not have commits: {0} \n".format(issue_key))            
 
         return latest_commits
     
@@ -262,11 +263,15 @@ class JiraService:
             if len(result["detail"][0]["repositories"]) != 0:
                 # commits are in DSC order
                 result = result["detail"][0]["repositories"][0]["commits"]        
+            else:
+                return None
                 
         else:
             result = commits
        
-        return result[0]        
+        commit_count = len(result)
+        return  result[0]
+
 
     def get_first_commit(self, issue_id=None, commits = None):
         if commits is None:
@@ -278,6 +283,8 @@ class JiraService:
             if len(result["detail"][0]["repositories"]) != 0:
                 # commits are in DSC order
                 result = result["detail"][0]["repositories"][0]["commits"]
+            else:
+                return None
         else:
             result = commits
         
@@ -286,8 +293,8 @@ class JiraService:
 
     def get_delta_first_and_last_commits(self, project_key, version_id):
         issues = self.get_project_version_issues(project_key, version_id)
-        last_commits = dict()
-        first_commits = dict()
+        last_commits = []
+        first_commits = []
 
         for issue in issues:
             commits_from_issue = self.get_commits_from_issue(issue["id"])
@@ -297,12 +304,20 @@ class JiraService:
                 if commits_from_issue:
                     first_commit = self.get_first_commit(commits=commits_from_issue)
                     last_commit = self.get_last_commit(commits=commits_from_issue)
-    
-                    if first_commit and last_commit:
-                        first_commits[issue["key"]] = first_commit
-                        last_commits[issue["key"]] = last_commit
 
-        return None
+                    if first_commit and last_commit:
+                        first_commits.append(first_commit)
+                        last_commits.append(last_commit)
+        if len(first_commits) !=0 and len(last_commits) != 0:
+            first_commit = sorted(first_commits, key=lambda x: x['authorTimestamp'])[0]
+            last_commit = sorted(last_commits, key=lambda x: x['authorTimestamp'], reverse=True)[0]
+
+            date1 = date_parser.parse(first_commit["authorTimestamp"], fuzzy=True)
+            date2 = date_parser.parse(last_commit["authorTimestamp"], fuzzy=True)
+
+            return abs((date1-date2).days)
+        else:
+            return 0
 
     def get_delta_first_and_last_commits_all(self, project_key):
         releases = self.jiraInstance.get_project_versions_paginated(project_key, limit=1000)["values"]
