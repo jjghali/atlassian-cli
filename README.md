@@ -69,6 +69,9 @@ https://click.palletsprojects.com/en/7.x/
 https://confluence.atlassian.com/doc/macros-139387.html
 https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html
 
+# Note
+This software is still under development. For feature requests please open up an Issue. I can't guarantee I will be able to work on it.
+
 # License
 
 Copyright (c) 2021 Joshua Ghali. All rights reserved.
