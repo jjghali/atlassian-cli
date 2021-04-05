@@ -68,3 +68,9 @@ https://pypi.org/project/atlassian-python-api/
 https://click.palletsprojects.com/en/7.x/
 https://confluence.atlassian.com/doc/macros-139387.html
 https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html
+
+# License
+
+Copyright (c) 2021 Joshua Ghali. All rights reserved.
+
+Licensed under the [MIT](./LICENSE) license.
