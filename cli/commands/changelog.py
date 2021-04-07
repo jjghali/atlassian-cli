@@ -1,6 +1,8 @@
+from click_help_colors import HelpColorsGroup, HelpColorsCommand
 import click
 import json
-import os, sys
+import os
+import sys
 from services import ConfluenceService
 from services import BitbucketService
 from services import SonarQubeService
@@ -8,19 +10,20 @@ from services import SonarQubeService
 verifyssl = False
 
 
-@click.group()
+@click.group(cls=HelpColorsGroup,
+             help_headers_color='yellow',
+             help_options_color='green')
 @click.pass_context
 def changelog(ctx):
     """Creates a changelog page on Confluence"""
     context_parent = click.get_current_context(silent=True)
     ctx.ensure_object(dict)
-    
+
     ctx.obj['bitbucket_url'] = context_parent.obj["bitbucket_url"]
     ctx.obj['jira_url'] = context_parent.obj["jira_url"]
     ctx.obj['confluence_url'] = context_parent.obj["confluence_url"]
     ctx.obj['username'] = context_parent.obj["username"]
     ctx.obj['password'] = context_parent.obj["password"]
-    
 
     verifyssl = context_parent.obj["verifyssl"]
     pass
@@ -49,11 +52,11 @@ def generate_product(ctx, version, space_key, product_name,
     template_file = template_file.strip()
 
     confluence_service = ConfluenceService(
-        ctx.obj['confluence_url'], 
-        ctx.obj['jira_url'], 
-        ctx.obj['bitbucket_url'], 
-        ctx.obj['username'], 
-        ctx.obj['password'], 
+        ctx.obj['confluence_url'],
+        ctx.obj['jira_url'],
+        ctx.obj['bitbucket_url'],
+        ctx.obj['username'],
+        ctx.obj['password'],
         ctx.obj['verifyssl'])
 
     if not configuration_repos:
@@ -65,7 +68,7 @@ def generate_product(ctx, version, space_key, product_name,
                                               space_key, version, parent_page_id)
         else:
             print("This was a dry-run test")
-    else:        
+    else:
         sys.exit("ERROR: Missing space-key or parent-page-id options.")
 
 
@@ -92,22 +95,23 @@ def generate_component(ctx, version, space_key, component_name, parent_page_id, 
     sonar_url = sonar_url.strip()
     sonar_service = None
 
-    confluence_service = ConfluenceService(ctx.obj['confluence_url'], 
-    ctx.obj['jira_url'], 
-    ctx.obj['bitbucket_url'], 
-    ctx.obj['username'], 
-    ctx.obj['password'], 
-    ctx.obj['verifyssl'])
-    
+    confluence_service = ConfluenceService(ctx.obj['confluence_url'],
+                                           ctx.obj['jira_url'],
+                                           ctx.obj['bitbucket_url'],
+                                           ctx.obj['username'],
+                                           ctx.obj['password'],
+                                           ctx.obj['verifyssl'])
+
     if space_key is not None or parent_page_id is not None:
         if sonar_api_key is not None and sonar_project_key is not None:
-            sonar_service = SonarQubeService(sonar_url, sonar_api_key, verifyssl)       
+            sonar_service = SonarQubeService(
+                sonar_url, sonar_api_key, verifyssl)
             sonar_measures = sonar_service.get_measures(sonar_project_key)
-            
+
         if not dry_run:
             confluence_service.push_changelog(component_name,
                                               space_key, version, parent_page_id, True)
         else:
             print("This was a dry-run test")
-    else:        
+    else:
         sys.exit("ERROR: Missing space-key or parent-page-id options.")

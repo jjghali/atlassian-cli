@@ -1,12 +1,16 @@
-import os, sys
+import os
+import sys
 import click
 import json
+from click_help_colors import HelpColorsGroup, HelpColorsCommand
 from services import ConfluenceService
 
 verifyssl = False
 
 
-@click.group()
+@click.group(cls=HelpColorsGroup,
+             help_headers_color='yellow',
+             help_options_color='green')
 @click.pass_context
 def releaseNote(ctx):
 
@@ -50,11 +54,12 @@ def generate(ctx, version, space_key, project_key, parent_page_id, template_file
         if not dry_run:
             if space_key is not None or parent_page_id is not None:
                 confluence_service.push_releasenote(
-                    space_key, version, start_date, release_date,parent_page_id, releasenote)
+                    space_key, version, start_date, release_date, parent_page_id, releasenote)
 
-            else:                
+            else:
                 sys.exit("ERROR: Page already exist or missing argument.")
         else:
             print("This was a dry-run test")
-    else:        
-        sys.exit("ERROR: Provided version not found. Please check the arguments passed.")
+    else:
+        sys.exit(
+            "ERROR: Provided version not found. Please check the arguments passed.")

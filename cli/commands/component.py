@@ -1,6 +1,6 @@
 import click
 import pprint36 as pprint
-
+from click_help_colors import HelpColorsGroup, HelpColorsCommand
 from prettytable import PrettyTable
 from services import BitbucketService
 
@@ -8,7 +8,9 @@ from services import BitbucketService
 jira_service = {}
 
 
-@click.group()
+@click.group(cls=HelpColorsGroup,
+             help_headers_color='yellow',
+             help_options_color='green')
 @click.pass_context
 def component(ctx):
     """Get information about a component"""

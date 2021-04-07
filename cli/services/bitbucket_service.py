@@ -4,16 +4,15 @@ import semantic_version
 import requests
 from atlassian import Bitbucket
 from atlassian import Jira
-
 import pprint36 as pprint
 
 
 class BitbucketService:
 
     def __init__(self, url, username, password, verifyssl):
-        
+
         self.verifyssl = verifyssl
-        
+
         self.bitbucketInstance = Bitbucket(
             url=url,
             username=username,

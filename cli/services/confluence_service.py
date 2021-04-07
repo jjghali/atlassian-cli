@@ -1,5 +1,6 @@
 import re
-import sys,os
+import sys
+import os
 import ssl
 import pprint36 as pprint
 from datetime import datetime
@@ -7,6 +8,7 @@ from atlassian import Confluence
 from .jira_service import JiraService
 from .bitbucket_service import BitbucketService
 from requests import HTTPError
+
 
 class ConfluenceService:
 
@@ -39,7 +41,7 @@ class ConfluenceService:
         self.load_product_changelog_template()
         self.load_component_changelog_template()
 
-    def generate_releasenote(self, project_key, version, template_file):        
+    def generate_releasenote(self, project_key, version, template_file):
         self.load_releasenote_template(template_file)
 
         if self.releasenote_template is None:
@@ -57,7 +59,7 @@ class ConfluenceService:
             releasenote = releasenote.replace("%project-key%", project_key)
             releasenote = releasenote.replace("%validate_task%", tasks)
 
-            return (releasenote,versionData["startDate"],versionData["releaseDate"])
+            return (releasenote, versionData["startDate"], versionData["releaseDate"])
         else:
             return None
 
@@ -96,10 +98,12 @@ class ConfluenceService:
 
         if changelog_content:
             print("")
-        else:            
-            sys.exit("ERROR: An Issue occured while trying to generate the changelog")
+        else:
+            sys.exit(
+                "ERROR: An Issue occured while trying to generate the changelog")
 
-        self.push_to_confluence(space_key,parent_page_id, page_title, changelog_content)
+        self.push_to_confluence(space_key, parent_page_id,
+                                page_title, changelog_content)
 
     def generate_component_changelog(self, component_name, product_name, version):
         release = self.bitbucket_service.get_release(
@@ -119,11 +123,14 @@ class ConfluenceService:
         converted_content = self.confluence.convert_wiki_to_storage(
             content)["value"]
         try:
-            self.confluence.create_page(space_key, title, converted_content, parent_page_id, 'page', 'storage','v2')
+            self.confluence.create_page(
+                space_key, title, converted_content, parent_page_id, 'page', 'storage', 'v2')
             print("Page \"{0}\" is pushed to confluence".format(title))
         except HTTPError:
             print()
-            sys.exit("ERROR: You may not have the permission to access this page or missing argument")
+            sys.exit(
+                "ERROR: You may not have the permission to access this page or missing argument")
+
     def load_releasenote_template(self, file_path):
         try:
             file = open(file_path,

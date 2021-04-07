@@ -16,3 +16,4 @@ six==1.15.0
 urllib3==1.26.3
 wcwidth==0.2.5
 wrapt==1.12.1
+click-help-colors==0.9
