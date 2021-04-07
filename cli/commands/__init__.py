@@ -1,5 +1,5 @@
 from .component import *
-from .config import *
+from .auth import *
 from .product import *
 from .releaseNote import *
 from .changelog import *
