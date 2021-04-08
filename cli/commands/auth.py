@@ -1,7 +1,6 @@
 from click_help_colors import HelpColorsGroup, HelpColorsCommand
 from utils import ConfigurationManager
 import click
-import os
 
 confManager = ConfigurationManager()
 

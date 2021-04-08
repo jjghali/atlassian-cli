@@ -1,6 +1,5 @@
 import json
 import re
-import semantic_version
 import requests
 from atlassian import Bitbucket
 from atlassian import Jira

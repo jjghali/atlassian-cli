@@ -21,9 +21,6 @@ $ atlcli [COMMON_ARGS] changelog [SUBCOMMAND] [OPTION]...
 | `-n, --component-name`      | Required  | Component name                                             |
 | `-i, --parent-page-id`      | Required  | Id of the page under which you will create your changelogs |
 | `-t, --template-file `      | Required  | Path to the template file for your changelog               |
-| `--sonar-project-key `      | Optional  | Project key on SonarQube.                                  |
-| `--sonar-api-key`           | Optional  | SonarQube API Key.                                         |
-| `--sonar -url`              | Optional  | URL to SonarQube.                                          |
 | `--dry -run / --no-dry-run` | Optional  | Dry run for testing                                        |
 | `--help`                    | Optional  | Show the help.                                             |
 

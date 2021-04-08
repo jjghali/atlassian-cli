@@ -1,10 +1,7 @@
 import re
-import time
 import base64
 import json
-import ssl
 import sys
-import os
 from datetime import date
 from dateutil import parser as date_parser
 
@@ -12,8 +9,6 @@ import pprint36 as pprint
 import requests
 from atlassian import Jira
 from prettytable import PrettyTable
-
-from .stats_service import StatsService
 
 
 class JiraService:

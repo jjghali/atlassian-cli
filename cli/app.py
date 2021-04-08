@@ -6,7 +6,7 @@ import sys
 import inspect
 from sys import argv
 from utils import ConfigurationManager
-from commands import product, component, releaseNote, auth, changelog, stats
+from commands import product, component, releaseNote, auth, changelog, repo
 
 
 currentdir = os.path.dirname(os.path.abspath(
@@ -38,12 +38,10 @@ def version():
     print("app version here")
 
 
-cli.add_command(changelog)
 cli.add_command(auth)
-cli.add_command(releaseNote)
 cli.add_command(product)
 cli.add_command(component)
-cli.add_command(stats)
+cli.add_command(repo)
 
 if __name__ == '__main__':
     cli()

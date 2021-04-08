@@ -1,7 +1,5 @@
 import re
 import sys
-import os
-import ssl
 import pprint36 as pprint
 from datetime import datetime
 from atlassian import Confluence

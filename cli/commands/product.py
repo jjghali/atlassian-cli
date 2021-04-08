@@ -3,7 +3,7 @@ import sys
 import click
 import pprint36 as pprint
 from click_help_colors import HelpColorsGroup, HelpColorsCommand
-from services import JiraService, PowerBIService
+from services import JiraService
 from utils import CsvUtil
 
 verifyssl = False

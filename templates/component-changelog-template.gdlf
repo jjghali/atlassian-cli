@@ -4,11 +4,6 @@ h2. Informations
 ||Date de publication|%publication_date%|
 ||Dépôts mis à jour|%update_date%|
 
-
-h2. SonarQube
-||Couverture||Fiabilité||Sécurité||Maintenabilité||Lignes de code||
-|{panel:borderStyle=none|bgColor=green}80%{panel}|{panel:borderStyle=none|bgColor=green}A%{panel}|{panel:borderStyle=none|bgColor=yellow}C{panel}|{panel:borderStyle=none|bgColor=green}A{panel}|{panel:borderStyle=none}16234{panel}|
-
 h2. Tickets
 {jiraissues:anonymous=false | columns=key,summary,story points  | jqlQuery=key in (%jira_tasks%)}
 
