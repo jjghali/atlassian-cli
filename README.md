@@ -1,8 +1,8 @@
 # Altassian CLI
+## Project Roadmap
+Project roadmap can be found [here](./ROADMAP.md)
 ## Introduction
-Altassian CLI is a Atlassian product CLI that allows you to create release notes, get infos about the repositories and repositories.
-
-## Requirements
+Altassian CLI is a CLI app allowing you to interact with Atlassian products from the command line.## Requirements
 * Python 3.+
 * Virtualenv
 * PIP 3+
@@ -25,23 +25,6 @@ pip install -r requirements.txt
 pip install . # While in root of project
 ```
 
-## Concourse
-```yaml
-- task: generate release note
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: <repository link here>
-      run:
-        path: /bin/sh
-        args:
-          - -c
-          - |            
-            atlcli --help
-
-```
 ## Usage
 A guide for the tool can be found on the [Usage](./doc/Usage.md) page.
 
